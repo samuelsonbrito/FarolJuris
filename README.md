@@ -217,6 +217,13 @@ falhas e limite restante). Para dar acesso a alguém:
 php artisan admin:promover pessoa@exemplo.com
 ```
 
+O **cadastro pelo site fica fechado** por padrão (`APP_CADASTRO_ABERTO=false`): o link
+"Criar conta" some e as contas são criadas pelo administrador:
+
+```bash
+php artisan usuario:criar pessoa@exemplo.com --nome="Nome" [--admin]
+```
+
 O rastreio mascara o IP, pseudonimiza o visitante e apaga os registros após 180 dias
 (`DJEN_RASTREIO_DIAS_RETENCAO`). Detalhes em
 [docs/11-administracao-e-rastreio.md](docs/11-administracao-e-rastreio.md).

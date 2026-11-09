@@ -21,6 +21,8 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            /** config('app.cadastro_aberto'): mostra ou esconde "Criar conta". */
+            cadastroAberto: boolean;
             [key: string]: unknown;
         };
     }

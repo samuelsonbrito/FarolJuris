@@ -102,7 +102,10 @@ defineProps<{
             </Button>
         </div>
 
-        <div class="text-center text-sm text-muted-foreground">
+        <div
+            v-if="$page.props.cadastroAberto"
+            class="text-center text-sm text-muted-foreground"
+        >
             Ainda não tem conta?
             <TextLink :href="register()" :tabindex="5">Cadastre-se</TextLink>
         </div>

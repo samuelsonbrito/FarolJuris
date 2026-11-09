@@ -19,6 +19,9 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        // Cadastro fechado: contas só pelo comando usuario:criar.
+        abort_unless(config('app.cadastro_aberto'), 403, 'O cadastro está fechado.');
+
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),

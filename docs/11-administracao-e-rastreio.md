@@ -16,7 +16,11 @@ integração com o CNJ.
 ```bash
 php artisan admin:promover pessoa@exemplo.com            # concede
 php artisan admin:promover pessoa@exemplo.com --remover  # retira
+php artisan usuario:criar pessoa@exemplo.com --admin     # cria a conta já como administradora
 ```
+
+Com o cadastro pelo site fechado (`APP_CADASTRO_ABERTO=false`, o padrão), novas contas só
+nascem pelo `usuario:criar`.
 
 No ambiente local, o seeder cria `admin@faroljuris.test` / `password` (não roda em produção).
 

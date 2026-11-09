@@ -78,6 +78,19 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cadastro aberto
+    |--------------------------------------------------------------------------
+    |
+    | Com false (padrão), ninguém se cadastra pelo site: /register responde 404,
+    | os links "Criar conta" somem e as contas são criadas pelo administrador
+    | com `php artisan usuario:criar`.
+    |
+    */
+
+    'cadastro_aberto' => (bool) env('APP_CADASTRO_ABERTO', false),
+
     'locale' => env('APP_LOCALE', 'pt_BR'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),

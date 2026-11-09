@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 const page = usePage();
 const usuario = computed(() => page.props.auth?.user ?? null);
 const nome = computed(() => page.props.name ?? 'FarolJuris');
+const cadastroAberto = computed(() => page.props.cadastroAberto === true);
 </script>
 
 <template>
@@ -54,10 +55,14 @@ const nome = computed(() => page.props.name ?? 'FarolJuris');
                         <Link :href="route('monitoramento.index')">Painel</Link>
                     </Button>
                     <template v-else>
-                        <Button as-child variant="ghost" size="sm">
+                        <Button
+                            as-child
+                            :variant="cadastroAberto ? 'ghost' : 'default'"
+                            size="sm"
+                        >
                             <Link :href="route('login')">Entrar</Link>
                         </Button>
-                        <Button as-child size="sm">
+                        <Button v-if="cadastroAberto" as-child size="sm">
                             <Link :href="route('register')">Criar conta</Link>
                         </Button>
                     </template>

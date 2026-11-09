@@ -40,6 +40,7 @@ php artisan djen:diagnostico [--sem-api]               # banco, cache, fila, e-m
 php artisan djen:verificar-filtros --oab=X --uf=UF [--processo= --parte= --advogado=]  # confere na API real se cada filtro filtra
 php artisan migrate --seed                            # usuária demo@faroljuris.test / password (não roda em produção)
 php artisan admin:promover email@x.com [--remover]  # acesso a /admin (seeder: admin@faroljuris.test / password)
+php artisan usuario:criar email@x.com [--nome=] [--admin]  # cria conta confirmada (cadastro pelo site fechado)
 php artisan djen:capturar-fixture --oab=12345 --uf=AM   # salva resposta REAL (precisa de IP no Brasil)
 php artisan djen:capturar-fixture --endpoint=comunicacao/tribunal --saida=tests/Fixtures/djen/tribunais.json
 
@@ -223,6 +224,10 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 - Métricas em `MetricasAdmin` (SQL Postgres, `AT TIME ZONE`, `percentile_cont`). Robôs fora das contagens.
 - Gráficos próprios em SVG (`components/admin/*`), cores `--viz-*` validadas; sempre com visão em tabela.
 - Nos testes `Unit` o rastreio fica desligado (`tests/Pest.php`): eles não limpam o banco.
+- **Cadastro fechado** por padrão (`config('app.cadastro_aberto')`, `APP_CADASTRO_ABERTO=false`):
+  `registerView` → 404, `CreateNewUser` → 403, prop compartilhada `cadastroAberto` esconde
+  "Criar conta" (PublicLayout, Login). Contas pelo comando `usuario:criar`. No `phpunit.xml` o
+  cadastro fica aberto (telas do kit); `tests/Feature/Auth/CadastroFechadoTest.php` fecha por config.
 - Detalhes: `docs/11-administracao-e-rastreio.md`.
 
 ## Interface, idioma e erros
