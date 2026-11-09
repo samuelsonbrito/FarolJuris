@@ -180,8 +180,15 @@ LGPD (`model:prune` às 03:17).
 
 ## 10. Primeiro acesso
 
-1. Crie a conta em `https://faroljuris.com.br/register` e confirme o e-mail.
-2. Acesso à área administrativa (SSH, na pasta do site):
+1. O cadastro pelo site fica **fechado** (`APP_CADASTRO_ABERTO=false`). Crie a sua conta,
+   já confirmada e com acesso à área administrativa (SSH ou aba **Commands**, na pasta do
+   site; a senha é pedida sem aparecer na tela):
+
+```bash
+php artisan usuario:criar seu@email.com --nome="Seu Nome" --admin
+```
+
+2. Para dar acesso administrativo a uma conta que já existe:
 
 ```bash
 php artisan admin:promover seu@email.com

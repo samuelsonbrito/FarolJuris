@@ -62,6 +62,7 @@ o cache precisa ser compartilhado (Redis).
 | `php artisan djen:verificar-filtros --oab= --uf= [--processo= --parte= --advogado= --tribunal= --data=]` | Confere na API real se cada filtro funciona. **Rode após o primeiro deploy.**                                         |
 | `php artisan djen:monitorar [--alvo=ID]... [--sync]`                                                     | Monitora agora (fila ou síncrono).                                                                                    |
 | `php artisan schedule:test --name=djen:monitorar`                                                        | Dispara a tarefa agendada como o scheduler faria.                                                                     |
+| `php artisan usuario:criar email [--nome=] [--admin]`                                                    | Cria uma conta já confirmada (o caminho com o cadastro fechado). Pede a senha sem mostrar.                            |
 | `php artisan admin:promover email [--remover]`                                                           | Dá ou tira o acesso à área administrativa (`/admin`).                                                                 |
 | `php artisan djen:capturar-fixture [...]`                                                                | Salva uma resposta real como fixture (anonimize antes de commitar).                                                   |
 
@@ -71,30 +72,31 @@ provavelmente não são o que você quer em produção: fila `sync`, e-mail `log
 
 ## Configuração (`config/djen.php`)
 
-| Variável                                          | Padrão                                  | Para quê                                              |
-| ------------------------------------------------- | --------------------------------------- | ----------------------------------------------------- |
-| `DJEN_GATEWAY`                                    | `api`                                   | `api` (CNJ) ou `fake` (dados fictícios)               |
-| `DJEN_BASE_URL`                                   | `https://comunicaapi.pje.jus.br/api/v1` | Homologação: `https://hcomunicaapi.cnj.jus.br/api/v1` |
-| `DJEN_USER_AGENT`                                 | `FarolJuris/1.0`                        | Identificação nas chamadas                            |
-| `DJEN_TIMEOUT` / `DJEN_CONNECT_TIMEOUT`           | 20 / 5 s                                | Timeouts                                              |
-| `DJEN_RETRY_TIMES`                                | 3                                       | Tentativas extras (conexão, 429, 5xx)                 |
-| `DJEN_RETRY_SLEEP_MS` / `DJEN_RETRY_MAX_SLEEP_MS` | 500 / 10000                             | Base e teto do backoff                                |
-| `DJEN_ITENS_POR_PAGINA`                           | 20                                      | Resultados por página na Consulta                     |
-| `DJEN_CACHE_TTL`                                  | 600 s                                   | Cache das consultas                                   |
-| `DJEN_RATE_LIMIT_PER_MINUTE`                      | 15                                      | Chamadas ao CNJ por minuto (jobs, global)             |
-| `DJEN_PUBLIC_RATE_LIMIT_PER_MINUTE`               | 30                                      | Consultas por minuto, por IP                          |
-| `DJEN_MONITORING_TIME` / `_TIMEZONE`              | `07:00` / `America/Manaus`              | Horário do monitoramento                              |
-| `DJEN_MONITORING_LOOKBACK_DAYS`                   | 3                                       | Janela de cada verificação                            |
-| `DJEN_MONITORING_ITENS_POR_PAGINA`                | 100                                     | Página usada pelo job                                 |
-| `DJEN_MONITORING_MAX_PAGINAS`                     | 5                                       | Páginas por alvo por execução (máx. 500 comunicações) |
-| `DJEN_MONITORING_MAX_ALVOS`                       | 50                                      | Alvos por usuário                                     |
-| `DJEN_EXPORT_DISK`                                | `local`                                 | Disco privado dos arquivos                            |
-| `DJEN_EXPORT_LIMITE_SINCRONO`                     | 100                                     | Até quantos itens gera na hora                        |
-| `DJEN_EXPORT_MAX_ITENS`                           | 2000                                    | Itens por exportação                                  |
-| `DJEN_EXPORT_DIAS_RETENCAO`                       | 7                                       | Dias até apagar exportações                           |
-| `DJEN_RASTREIO_ATIVO`                             | `true`                                  | Rastreio da área administrativa                       |
-| `DJEN_RASTREIO_DIAS_RETENCAO`                     | 180                                     | Dias até apagar buscas, chamadas e eventos rastreados |
-| `DJEN_WHATSAPP_DRIVER`                            | `log`                                   | Driver do WhatsApp                                    |
+| Variável                                          | Padrão                                  | Para quê                                                               |
+| ------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------- |
+| `DJEN_GATEWAY`                                    | `api`                                   | `api` (CNJ) ou `fake` (dados fictícios)                                |
+| `DJEN_BASE_URL`                                   | `https://comunicaapi.pje.jus.br/api/v1` | Homologação: `https://hcomunicaapi.cnj.jus.br/api/v1`                  |
+| `DJEN_USER_AGENT`                                 | `FarolJuris/1.0`                        | Identificação nas chamadas                                             |
+| `DJEN_TIMEOUT` / `DJEN_CONNECT_TIMEOUT`           | 20 / 5 s                                | Timeouts                                                               |
+| `DJEN_RETRY_TIMES`                                | 3                                       | Tentativas extras (conexão, 429, 5xx)                                  |
+| `DJEN_RETRY_SLEEP_MS` / `DJEN_RETRY_MAX_SLEEP_MS` | 500 / 10000                             | Base e teto do backoff                                                 |
+| `DJEN_ITENS_POR_PAGINA`                           | 20                                      | Resultados por página na Consulta                                      |
+| `DJEN_CACHE_TTL`                                  | 600 s                                   | Cache das consultas                                                    |
+| `DJEN_RATE_LIMIT_PER_MINUTE`                      | 15                                      | Chamadas ao CNJ por minuto (jobs, global)                              |
+| `DJEN_PUBLIC_RATE_LIMIT_PER_MINUTE`               | 30                                      | Consultas por minuto, por IP                                           |
+| `DJEN_MONITORING_TIME` / `_TIMEZONE`              | `07:00` / `America/Manaus`              | Horário do monitoramento                                               |
+| `DJEN_MONITORING_LOOKBACK_DAYS`                   | 3                                       | Janela de cada verificação                                             |
+| `DJEN_MONITORING_ITENS_POR_PAGINA`                | 100                                     | Página usada pelo job                                                  |
+| `DJEN_MONITORING_MAX_PAGINAS`                     | 5                                       | Páginas por alvo por execução (máx. 500 comunicações)                  |
+| `DJEN_MONITORING_MAX_ALVOS`                       | 50                                      | Alvos por usuário                                                      |
+| `DJEN_EXPORT_DISK`                                | `local`                                 | Disco privado dos arquivos                                             |
+| `DJEN_EXPORT_LIMITE_SINCRONO`                     | 100                                     | Até quantos itens gera na hora                                         |
+| `DJEN_EXPORT_MAX_ITENS`                           | 2000                                    | Itens por exportação                                                   |
+| `DJEN_EXPORT_DIAS_RETENCAO`                       | 7                                       | Dias até apagar exportações                                            |
+| `APP_CADASTRO_ABERTO`                             | `false`                                 | Cadastro pelo site; fechado, as contas são criadas com `usuario:criar` |
+| `DJEN_RASTREIO_ATIVO`                             | `true`                                  | Rastreio da área administrativa                                        |
+| `DJEN_RASTREIO_DIAS_RETENCAO`                     | 180                                     | Dias até apagar buscas, chamadas e eventos rastreados                  |
+| `DJEN_WHATSAPP_DRIVER`                            | `log`                                   | Driver do WhatsApp                                                     |
 
 O app funciona com `php artisan optimize` (config em cache): nenhum `env()` fora de
 `config/`. Depois de mudar o `.env` em produção, rode `php artisan optimize` de novo e
