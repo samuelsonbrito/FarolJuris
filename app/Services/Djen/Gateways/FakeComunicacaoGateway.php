@@ -88,6 +88,18 @@ final class FakeComunicacaoGateway implements ComunicacaoGateway
             return false;
         }
 
+        if ($f->texto !== null && ! self::contem($c->textoPuro(), $f->texto)) {
+            return false;
+        }
+
+        if ($f->meio !== null && $c->meio !== $f->meio) {
+            return false;
+        }
+
+        if ($f->numeroComunicacao !== null && $c->numeroComunicacao !== $f->numeroComunicacao) {
+            return false;
+        }
+
         // Datas de calendário: compara AAAA-MM-DD, sem fuso nem horário.
         $data = $c->dataDisponibilizacao->toDateString();
 
@@ -117,6 +129,8 @@ final class FakeComunicacaoGateway implements ComunicacaoGateway
             new AdvogadoData('Beatriz Sales Amaral', '98765', 'SP'),
         ];
         $partes = ['Joana Ferreira Alves', 'Construtora Rio Negro Ltda', 'Marcos Antônio Teles', 'Município de Exemplo', 'Lúcia Bentes Coelho'];
+        $classes = [['PROCEDIMENTO COMUM CÍVEL', '7'], ['BUSCA E APREENSÃO EM ALIENAÇÃO FIDUCIÁRIA', '81'], ['EXECUÇÃO DE TÍTULO EXTRAJUDICIAL', '12154'], ['APELAÇÃO CÍVEL', '198']];
+        $assuntos = ['manifestar-se sobre os documentos juntados aos autos', 'manifestar-se sobre a alienação fiduciária do bem', 'apresentar contrarrazões ao recurso'];
 
         $lista = [];
 
@@ -134,13 +148,19 @@ final class FakeComunicacaoGateway implements ComunicacaoGateway
                 tipoDocumento: $documentos[$i % count($documentos)],
                 dataDisponibilizacao: $hoje->subDays(intdiv($i, 3)),
                 numeroProcesso: $processo,
-                destinatarios: [new DestinatarioData($parte), new DestinatarioData($parteContraria)],
+                destinatarios: [new DestinatarioData($parte, 'A'), new DestinatarioData($parteContraria, 'P')],
                 advogados: array_values(array_unique([$advogados[$i % 3], $advogados[($i + 1) % 3]], SORT_REGULAR)),
                 textoHtml: "<p><strong>{$tipo}</strong> — exemplo fictício nº ".($i + 1).'.</p>'
                     ."<p>Fica a parte {$parte} intimada, por seus advogados, para, no prazo de 15 (quinze) dias, "
-                    .'manifestar-se sobre os documentos juntados aos autos, sob pena de preclusão.</p>'
+                    .$assuntos[$i % count($assuntos)].', sob pena de preclusão.</p>'
                     .'<p>Este texto é gerado pelo modo de demonstração e não corresponde a nenhum processo real.</p>',
                 linkDocumento: $i % 2 === 0 ? 'https://example.org/documentos/'.substr(sha1("fake-{$i}"), 0, 16) : null,
+                idCnj: 900100000 + $i,
+                numeroComunicacao: (string) (1000 + $i),
+                meio: $tipo === 'Edital' ? 'E' : 'D',
+                meioCompleto: $tipo === 'Edital' ? 'Plataforma Nacional de Editais' : 'Diário de Justiça Eletrônico Nacional',
+                classe: $classes[$i % count($classes)][0],
+                codigoClasse: $classes[$i % count($classes)][1],
             );
         }
 

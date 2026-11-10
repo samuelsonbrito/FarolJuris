@@ -78,7 +78,7 @@ it('salva as comunicações e cria um alerta por comunicação', function () {
 
     $c = Communication::firstWhere('hash', 'h1');
     expect($c->tribunal)->toBe('TJAM')
-        ->and($c->destinatarios)->toBe([['nome' => 'Parte Fictícia']])
+        ->and($c->destinatarios)->toEqual([['nome' => 'Parte Fictícia', 'polo' => null]])
         // jsonb do Postgres não preserva a ordem das chaves.
         ->and($c->advogados)->toEqual([['nome' => 'Advogada Fictícia', 'numeroOab' => '12345', 'ufOab' => 'AM']])
         ->and($c->toData()->numeroProcessoFormatado())->toBe('0001234-56.2024.8.04.0001');

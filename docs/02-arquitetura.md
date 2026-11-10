@@ -88,7 +88,7 @@ config/
 └── tribunais.php            lista estática de tribunais (sigla → nome)
 resources/js/
 ├── pages/                   uma pasta por aba + Erro.vue (+ telas do kit: auth/, settings/)
-├── components/              FiltroBusca, CardComunicacao, ModalInteiroTeor, Paginacao, ...
+├── components/              FiltroBusca, CardComunicacao, PainelComunicacao, Paginacao, ...
 ├── composables/             useSelecao, useExportar (+ os do kit)
 ├── layouts/                 PublicLayout (Consulta, Erro) e AppLayout (área logada)
 ├── lib/cnj.ts               máscara CNJ, normalização de OAB

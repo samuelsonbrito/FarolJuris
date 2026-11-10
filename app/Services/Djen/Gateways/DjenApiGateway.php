@@ -13,9 +13,9 @@ use App\Services\Djen\Mapping\ComunicacaoApiMapper;
  * Comunica API do CNJ, chamada pelo nosso backend (o navegador nunca fala
  * com o CNJ). Exige servidor com IP no Brasil.
  *
- * Parâmetros de GET /comunicacao: `itensPorPagina` confirmado num request
- * real; os de filtro seguem o padrão informado no escopo do projeto e na
- * documentação pública, e são conferidos no servidor por
+ * Parâmetros de GET /comunicacao vistos em requests reais: `siglaTribunal`,
+ * `nomeParte`, `texto`, `dataDisponibilizacaoInicio/Fim` e `itensPorPagina`.
+ * Os demais seguem a documentação pública e são conferidos no servidor por
  * `php artisan djen:verificar-filtros`.
  */
 final class DjenApiGateway implements ComunicacaoGateway
@@ -53,6 +53,9 @@ final class DjenApiGateway implements ComunicacaoGateway
             'nomeAdvogado' => $f->nomeAdvogado,
             'numeroProcesso' => $f->numeroProcesso,
             'siglaTribunal' => $f->tribunal,
+            'texto' => $f->texto,
+            'meio' => $f->meio,
+            'numeroComunicacao' => $f->numeroComunicacao,
             'dataDisponibilizacaoInicio' => $f->dataInicio?->toDateString(),
             'dataDisponibilizacaoFim' => $f->dataFim?->toDateString(),
             'pagina' => $f->pagina,

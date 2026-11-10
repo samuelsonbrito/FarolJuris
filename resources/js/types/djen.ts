@@ -4,6 +4,8 @@
 /** App\Http\Resources\Djen\ComunicacaoResource → destinatarios[] */
 export interface Destinatario {
     nome: string;
+    /** Polo na API: A (ativo), P (passivo) ou outro código; null se desconhecido. */
+    polo: string | null;
 }
 
 /** App\Http\Resources\Djen\ComunicacaoResource → advogados[] */
@@ -16,6 +18,16 @@ export interface Advogado {
 /** App\Http\Resources\Djen\ComunicacaoResource */
 export interface Comunicacao {
     hash: string;
+    /** Identificador da comunicação na Comunica API. */
+    id: number | null;
+    numeroComunicacao: string | null;
+    /** D (Diário de Justiça Eletrônico Nacional) ou E (Plataforma Nacional de Editais). */
+    meio: string | null;
+    meioCompleto: string | null;
+    classe: string | null;
+    codigoClasse: string | null;
+    /** Número do processo só com dígitos (para copiar e buscar). */
+    numeroProcessoDigitos: string;
     tribunal: string;
     orgaoJulgador: string | null;
     tipoComunicacao: string | null;
@@ -65,6 +77,11 @@ export interface FiltrosConsulta {
     tribunal: string | null;
     inicio: string | null;
     fim: string | null;
+    /** Palavra-chave no teor. */
+    texto: string | null;
+    meio: string | null;
+    /** Número da comunicação. */
+    comunicacao: string | null;
 }
 
 /** Props da página Consulta/Index. */
@@ -74,4 +91,6 @@ export interface ConsultaPageProps {
     erro: ErroConsulta | null;
     tribunais: Tribunal[];
     ufs: string[];
+    /** ConsultaRequest::MEIOS (código → nome). */
+    meios: Record<string, string>;
 }

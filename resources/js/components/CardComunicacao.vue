@@ -62,7 +62,15 @@ const advogados = computed(() =>
             :id="`processo-${comunicacao.hash}`"
             class="mt-3 font-mono text-base font-semibold tracking-tight"
         >
-            {{ comunicacao.numeroProcesso }}
+            <button
+                type="button"
+                class="rounded-sm text-left underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                :title="`Ver detalhes de ${comunicacao.numeroProcesso}`"
+                data-testid="abrir-processo"
+                @click="$emit('verInteiroTeor', comunicacao)"
+            >
+                {{ comunicacao.numeroProcesso }}
+            </button>
         </h3>
 
         <dl class="mt-3 grid gap-2 text-sm">
@@ -110,7 +118,7 @@ const advogados = computed(() =>
                 @click="$emit('verInteiroTeor', comunicacao)"
             >
                 <FileText class="size-4" aria-hidden="true" />
-                Ver inteiro teor
+                Ver detalhes
             </Button>
         </footer>
     </article>

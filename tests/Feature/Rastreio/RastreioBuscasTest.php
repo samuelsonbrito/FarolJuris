@@ -107,3 +107,10 @@ it('nunca derruba a consulta se gravar o rastreio falhar', function () {
         ->assertOk()
         ->assertInertia(fn ($page) => $page->where('erro', null)->has('resultados.data'));
 });
+
+it('registra a palavra-chave, o meio e o nº da comunicação', function () {
+    $this->get(route('consulta.index', ['texto' => 'alienação fiduciária', 'meio' => 'D', 'comunicacao' => '5645']))->assertOk();
+
+    expect(RegistroBusca::sole()->only(['criterio', 'texto', 'meio', 'numero_comunicacao']))
+        ->toBe(['criterio' => 'texto', 'texto' => 'alienação fiduciária', 'meio' => 'D', 'numero_comunicacao' => '5645']);
+});

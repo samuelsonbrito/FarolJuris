@@ -5,13 +5,23 @@ import CardComunicacao from './CardComunicacao.vue';
 
 const comunicacao: Comunicacao = {
     hash: 'abc123',
+    id: 776349899,
+    numeroComunicacao: '5645',
+    meio: 'D',
+    meioCompleto: 'Diário de Justiça Eletrônico Nacional',
+    classe: 'PROCEDIMENTO COMUM CÍVEL',
+    codigoClasse: '7',
+    numeroProcessoDigitos: '00012345620248040001',
     tribunal: 'TJAM',
     orgaoJulgador: '1ª Vara Cível',
     tipoComunicacao: 'Intimação',
     tipoDocumento: 'Despacho',
     dataDisponibilizacao: '2026-11-06',
     numeroProcesso: '0001234-56.2024.8.04.0001',
-    destinatarios: [{ nome: 'Joana Alves' }, { nome: 'Empresa X Ltda' }],
+    destinatarios: [
+        { nome: 'Joana Alves', polo: 'A' },
+        { nome: 'Empresa X Ltda', polo: 'P' },
+    ],
     advogados: [
         { nome: 'Helena Prado', numeroOab: '12345', ufOab: 'AM' },
         { nome: 'Sem OAB', numeroOab: null, ufOab: null },
@@ -57,6 +67,14 @@ describe('CardComunicacao', () => {
 
         expect(wrapper.text()).not.toContain('Vara');
         expect(wrapper.find('[data-testid="advogados"]').exists()).toBe(false);
+    });
+
+    it('abre os detalhes ao clicar no número do processo', async () => {
+        const wrapper = mount(CardComunicacao, { props: { comunicacao } });
+
+        await wrapper.find('[data-testid="abrir-processo"]').trigger('click');
+
+        expect(wrapper.emitted('verInteiroTeor')).toEqual([[comunicacao]]);
     });
 
     it('emite verInteiroTeor com a comunicação', async () => {

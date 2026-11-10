@@ -49,13 +49,20 @@ it('busca por OAB e UF e devolve cards serializados pelo Resource', function () 
             ->where('resultados.meta.ultimaPagina', fn (int $u) => $u >= 2)
             ->has('resultados.data', 10, fn (Assert $c) => $c
                 ->whereType('hash', 'string')
+                ->whereType('id', 'integer')
+                ->whereType('numeroComunicacao', 'string')
+                ->where('meio', fn (string $m) => in_array($m, ['D', 'E'], true))
+                ->whereType('meioCompleto', 'string')
+                ->whereType('classe', 'string')
+                ->whereType('codigoClasse', 'string')
+                ->where('numeroProcessoDigitos', fn (string $d) => (bool) preg_match('/^\d{20}$/', $d))
                 ->whereType('tribunal', 'string')
                 ->whereType('orgaoJulgador', 'string|null')
                 ->whereType('tipoComunicacao', 'string|null')
                 ->whereType('tipoDocumento', 'string|null')
                 ->where('dataDisponibilizacao', fn (string $d) => (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', $d))
                 ->where('numeroProcesso', fn (string $n) => (bool) preg_match('/^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$/', $n))
-                ->has('destinatarios.0.nome')
+                ->has('destinatarios.0', fn (Assert $d) => $d->whereType('nome', 'string')->where('polo', 'A'))
                 ->has('advogados.0', fn (Assert $a) => $a->has('nome')->has('numeroOab')->has('ufOab'))
                 ->whereType('trecho', 'string')
                 ->where('textoHtml', fn (string $h) => ! str_contains($h, '<script'))
@@ -156,4 +163,46 @@ it('usa o gateway configurado', function (string $driver, string $classe) {
 })->with([
     ['fake', FakeComunicacaoGateway::class],
     ['api', DjenApiGateway::class],
+]);
+
+it('repassa palavra-chave, meio e nº da comunicação e os devolve nos filtros', function () {
+    $gateway = Mockery::mock(ComunicacaoGateway::class);
+    $gateway->shouldReceive('tribunais')->andReturn([]);
+    $gateway->shouldReceive('buscar')->once()->withArgs(fn (FiltroConsulta $f) => $f->texto === 'alienação fiduciária'
+        && $f->meio === 'E'
+        && $f->numeroComunicacao === '5645'
+        && $f->tribunal === 'TJAM')
+        ->andReturn(new ResultadoConsulta([], 0, 1, 10));
+    $this->app->instance(ComunicacaoGateway::class, $gateway);
+
+    $this->get(route('consulta.index', ['tribunal' => 'tjam', 'texto' => ' alienação fiduciária ', 'meio' => 'e', 'comunicacao' => '56.45']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('filtros.texto', 'alienação fiduciária')
+            ->where('filtros.meio', 'E')
+            ->where('filtros.comunicacao', '5645')
+            ->where('meios', ['D' => 'Diário de Justiça Eletrônico Nacional', 'E' => 'Plataforma Nacional de Editais']));
+});
+
+it('palavra-chave sozinha já busca e filtra o teor', function () {
+    $this->get(route('consulta.index', ['texto' => 'alienação fiduciária']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('resultados.meta.total', fn (int $t) => $t > 0 && $t < 45)
+            ->where('resultados.data', fn ($itens) => collect($itens)->every(fn ($c) => str_contains(mb_strtolower($c['textoHtml']), 'alienação fiduciária'))));
+});
+
+it('filtra pelo meio no modo de demonstração', function () {
+    $this->get(route('consulta.index', ['tribunal' => 'TJAM', 'meio' => 'E']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('resultados.data', fn ($itens) => count($itens) > 0 && collect($itens)->every(fn ($c) => $c['meio'] === 'E' && $c['tipoComunicacao'] === 'Edital')));
+});
+
+it('valida palavra-chave, meio e nº da comunicação', function (array $query, string $campo) {
+    $this->get(route('consulta.index', ['tribunal' => 'TJAM', ...$query]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->has("errors.{$campo}")->where('resultados', null));
+})->with([
+    'palavra curta' => [['texto' => 'ab'], 'texto'],
+    'meio inexistente' => [['meio' => 'X'], 'meio'],
+    'comunicação longa' => [['comunicacao' => '1234567890123'], 'comunicacao'],
 ]);

@@ -12,7 +12,7 @@ import { computed, ref, watch } from 'vue';
 import BarraExportacao from '@/components/BarraExportacao.vue';
 import CardComunicacao from '@/components/CardComunicacao.vue';
 import EstadoVazio from '@/components/EstadoVazio.vue';
-import ModalInteiroTeor from '@/components/ModalInteiroTeor.vue';
+import PainelComunicacao from '@/components/PainelComunicacao.vue';
 import FormAlvo from '@/components/monitoramento/FormAlvo.vue';
 import ListaAlvos from '@/components/monitoramento/ListaAlvos.vue';
 import PreferenciasNotificacao from '@/components/monitoramento/PreferenciasNotificacao.vue';
@@ -379,5 +379,5 @@ const vazio = computed(() => {
         </section>
     </div>
 
-    <ModalInteiroTeor v-model:open="modalAberto" :comunicacao="selecionada" />
+    <PainelComunicacao v-model:open="modalAberto" :comunicacao="selecionada" />
 </template>

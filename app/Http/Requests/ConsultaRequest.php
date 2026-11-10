@@ -20,6 +20,12 @@ class ConsultaRequest extends FormRequest
         'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO',
     ];
 
+    /** Valores de `meio` vistos na Comunica API. */
+    public const MEIOS = [
+        'D' => 'Diário de Justiça Eletrônico Nacional',
+        'E' => 'Plataforma Nacional de Editais',
+    ];
+
     private bool $invalido = false;
 
     public function authorize(): bool
@@ -53,7 +59,7 @@ class ConsultaRequest extends FormRequest
     {
         $limpo = [];
 
-        foreach (['oab', 'uf', 'parte', 'advogado', 'processo', 'tribunal', 'inicio', 'fim', 'pagina'] as $campo) {
+        foreach (['oab', 'uf', 'parte', 'advogado', 'processo', 'tribunal', 'inicio', 'fim', 'pagina', 'texto', 'meio', 'comunicacao'] as $campo) {
             $valor = $this->query($campo);
             $limpo[$campo] = is_string($valor) && trim($valor) !== '' ? trim($valor) : null;
         }
@@ -66,7 +72,11 @@ class ConsultaRequest extends FormRequest
             $limpo['processo'] = preg_replace('/\D/', '', $limpo['processo']);
         }
 
-        foreach (['uf', 'tribunal'] as $campo) {
+        if ($limpo['comunicacao'] !== null) {
+            $limpo['comunicacao'] = preg_replace('/\D/', '', $limpo['comunicacao']);
+        }
+
+        foreach (['uf', 'tribunal', 'meio'] as $campo) {
             if ($limpo[$campo] !== null) {
                 $limpo[$campo] = mb_strtoupper($limpo[$campo]);
             }
@@ -90,6 +100,9 @@ class ConsultaRequest extends FormRequest
             'inicio' => ['nullable', 'date_format:Y-m-d'],
             'fim' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:inicio'],
             'pagina' => ['nullable', 'integer', 'min:1', 'max:500'],
+            'texto' => ['nullable', 'string', 'min:3', 'max:200'],
+            'meio' => ['nullable', Rule::in(array_keys(self::MEIOS))],
+            'comunicacao' => ['nullable', 'digits_between:1,12'],
         ];
     }
 
@@ -110,6 +123,10 @@ class ConsultaRequest extends FormRequest
             'inicio.date_format' => 'Data inicial inválida.',
             'fim.date_format' => 'Data final inválida.',
             'fim.after_or_equal' => 'A data final deve ser igual ou posterior à inicial.',
+            'texto.min' => 'Digite ao menos 3 letras da palavra-chave.',
+            'texto.max' => 'Palavra-chave muito longa.',
+            'meio.in' => 'Meio inválido.',
+            'comunicacao.digits_between' => 'Número da comunicação inválido.',
         ];
     }
 
@@ -129,6 +146,9 @@ class ConsultaRequest extends FormRequest
             dataFim: isset($v['fim']) ? CarbonImmutable::createFromFormat('!Y-m-d', $v['fim']) : null,
             pagina: (int) ($v['pagina'] ?? 1),
             porPagina: (int) config('djen.itens_por_pagina'),
+            texto: $v['texto'] ?? null,
+            meio: $v['meio'] ?? null,
+            numeroComunicacao: $v['comunicacao'] ?? null,
         );
     }
 }
