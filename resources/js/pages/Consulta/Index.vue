@@ -3,7 +3,7 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 import { AlertTriangle, RotateCw, SearchX, ScrollText } from '@lucide/vue';
 import { computed, ref, useTemplateRef, watch } from 'vue';
 import BarraExportacao from '@/components/BarraExportacao.vue';
-import CardComunicacao from '@/components/CardComunicacao.vue';
+import LinhaComunicacao from '@/components/LinhaComunicacao.vue';
 import SkeletonResultados from '@/components/consulta/SkeletonResultados.vue';
 import EstadoVazio from '@/components/EstadoVazio.vue';
 import FiltroBusca from '@/components/FiltroBusca.vue';
@@ -195,8 +195,21 @@ const resumo = computed(() =>
                         {{ resultados.meta.ultimaPagina }}
                     </p>
 
-                    <div class="grid gap-4">
-                        <CardComunicacao
+                    <div
+                        class="overflow-hidden rounded-xl border bg-card shadow-xs"
+                        data-testid="lista-comunicacoes"
+                    >
+                        <div
+                            class="hidden gap-x-4 border-b bg-muted/40 px-4 py-2 text-xs font-medium tracking-wide text-muted-foreground uppercase lg:grid lg:grid-cols-[7.5rem_minmax(0,1.7fr)_minmax(0,1fr)_minmax(0,1.5fr)_auto]"
+                            aria-hidden="true"
+                        >
+                            <span>Disponib.</span>
+                            <span>Processo / órgão</span>
+                            <span>Tipo</span>
+                            <span>Partes e advogados</span>
+                            <span class="text-right">Ações</span>
+                        </div>
+                        <LinhaComunicacao
                             v-for="c in resultados.data"
                             :key="c.hash"
                             :comunicacao="c"

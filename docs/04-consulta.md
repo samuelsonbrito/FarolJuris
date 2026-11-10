@@ -81,8 +81,14 @@ o tempo de espera (`Retry-After`).
     - O número do processo ganha a máscara CNJ enquanto se digita (`lib/cnj.ts`).
 - **Navegação**: `router.get(..., { preserveState, preserveScroll })`, mantendo os
   filtros na URL.
-- **Resultados**: `CardComunicacao` (tribunal, órgão, tipo, data, processo, partes,
-  advogados, trecho de 280 caracteres) e `Paginacao`.
+- **Resultados**: lista compacta (`LinhaComunicacao`), uma linha por comunicação, com as
+  colunas Disponib. (data, tribunal e meio D/E), Processo/órgão (número com botão de copiar
+  só os dígitos, classe e órgão), Tipo (selo colorido por tipo, `TipoComunicacaoBadge`, e
+  o tipo de documento), Partes e advogados ("ATIVO × passivo" e até 3 OABs, com "+N") e
+  Ações (ver detalhes). No celular, as colunas empilham. Depois, `Paginacao`.
+  Cores dos tipos em `lib/comunicacao.ts` (Intimação âmbar, Citação rosa, Edital violeta,
+  Lista de distribuição azul, Pauta de julgamento verde; outros neutros). O nome do tipo
+  vai sempre escrito: a cor só ajuda a bater o olho.
 - **Atalhos de período** (`lib/datas.ts`): Hoje, Ontem, 7 dias, 30 dias, Este mês, Mês
   passado e Sem datas preenchem as datas (no fuso do navegador) e buscam na hora.
 - **Filtros avançados** (recolhidos; abrem sozinhos se vierem na URL): meio de publicação

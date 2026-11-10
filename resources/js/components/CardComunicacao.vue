@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { CalendarDays, FileText, Landmark, Scale, Users } from '@lucide/vue';
 import { computed } from 'vue';
+import TipoComunicacaoBadge from '@/components/TipoComunicacaoBadge.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatarData } from '@/lib/cnj';
@@ -41,9 +42,7 @@ const advogados = computed(() =>
                 data-testid="selecionar"
             />
             <Badge data-testid="tribunal">{{ comunicacao.tribunal }}</Badge>
-            <Badge v-if="comunicacao.tipoComunicacao" variant="secondary">
-                {{ comunicacao.tipoComunicacao }}
-            </Badge>
+            <TipoComunicacaoBadge :tipo="comunicacao.tipoComunicacao" />
             <Badge v-if="comunicacao.tipoDocumento" variant="outline">
                 {{ comunicacao.tipoDocumento }}
             </Badge>
