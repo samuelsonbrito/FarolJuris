@@ -52,6 +52,8 @@ export interface ResultadoConsulta {
         porPagina: number;
         total: number;
         ultimaPagina: number;
+        /** Filtro por tipo aplicado só às primeiras `analisadas` de `totalApi` comunicações. */
+        filtroParcial: { analisadas: number; totalApi: number } | null;
     };
 }
 

@@ -34,6 +34,13 @@ return [
 
     'itens_por_pagina' => (int) env('DJEN_ITENS_POR_PAGINA', 20),
 
+    // A API ignora o tipo de comunicação (visto em produção, 10/11/2026): o filtro por tipo
+    // é feito aqui, sobre até `max_paginas` páginas de `itens_por_pagina` comunicações.
+    'filtro_tipo' => [
+        'itens_por_pagina' => (int) env('DJEN_FILTRO_TIPO_ITENS_POR_PAGINA', 100),
+        'max_paginas' => (int) env('DJEN_FILTRO_TIPO_MAX_PAGINAS', 10),
+    ],
+
     // Segundos que uma consulta fica em cache (chave baseada nos filtros).
     'cache_ttl' => (int) env('DJEN_CACHE_TTL', 600),
 

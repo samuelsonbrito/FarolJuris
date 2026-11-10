@@ -179,6 +179,24 @@ const resumo = computed(() =>
             </Alert>
 
             <template v-else-if="resultados">
+                <p
+                    v-if="resultados.meta.filtroParcial"
+                    class="text-sm text-muted-foreground"
+                    data-testid="aviso-filtro-parcial"
+                >
+                    O tipo foi filtrado nas
+                    {{
+                        resultados.meta.filtroParcial.analisadas.toLocaleString(
+                            'pt-BR',
+                        )
+                    }}
+                    primeiras comunicações devolvidas pelo CNJ, de
+                    {{
+                        resultados.meta.filtroParcial.totalApi.toLocaleString(
+                            'pt-BR',
+                        )
+                    }}. Para ver as demais, reduza o período.
+                </p>
                 <EstadoVazio
                     v-if="resultados.data.length === 0"
                     titulo="Nenhuma comunicação encontrada"
