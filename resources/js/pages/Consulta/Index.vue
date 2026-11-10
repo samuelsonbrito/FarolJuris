@@ -144,6 +144,7 @@ const resumo = computed(() =>
             :tribunais="tribunais"
             :ufs="ufs"
             :meios="meios"
+            :tipos="tipos"
             :erros="erros"
             :carregando="carregando"
             @buscar="visitar"

@@ -124,11 +124,13 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   advogado placeholder "SISTEMA DE CITAÇÃO E INTIMAÇÃO ELETRÔNICA" (OAB 99999999);
   `nomeClasse` com caixa quebrada (normalizado com `mb_strtoupper` e exibido no painel).
 - Parâmetros enviados (`DjenApiGateway::parametros()`): `numeroOab, ufOab, nomeParte,
-  nomeAdvogado, numeroProcesso, siglaTribunal, texto, meio, numeroComunicacao,
+  nomeAdvogado, numeroProcesso, siglaTribunal, texto, meio, numeroComunicacao, tipoComunicacao,
   dataDisponibilizacaoInicio/Fim (Y-m-d), pagina, itensPorPagina`. **Vistos num request real**
   (10/11/2026): `siglaTribunal, nomeParte, texto, dataDisponibilizacaoInicio/Fim, itensPorPagina`.
   Os demais vêm da documentação pública e são **conferidos no servidor** por
   `djen:verificar-filtros` (um nome errado é ignorado pela API, e o comando detecta).
+- Tipo (`tipo` → `tipoComunicacao`, não confirmado): um de `ConsultaRequest::TIPOS`. O filtro por OAB
+  funciona (produção, 10/11/2026: `numeroOab=5055&ufOab=AM` → count 1001, não o teto de 10000).
 - `meio`: `D` (Diário de Justiça Eletrônico Nacional) ou `E` (Plataforma Nacional de Editais),
   `ConsultaRequest::MEIOS`. Certidão em PDF: endpoint ainda não visto, não implementada.
 - Tribunais: lista estática em `config/tribunais.php`, com siglas no formato de
@@ -139,7 +141,7 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 ## Aba Consulta
 
 - Rota pública `GET /consulta` (`consulta.index`, `throttle:djen-consulta`); `/` redireciona para ela.
-- Query string do app: `oab, uf, parte, advogado, processo, tribunal, texto, meio, comunicacao,
+- Query string do app: `oab, uf, parte, advogado, processo, tribunal, texto, meio, comunicacao, tipo,
   inicio, fim, pagina`. Atalhos de período em `lib/datas.ts`; filtros avançados recolhidos.
   `ConsultaRequest` normaliza (OAB via `Oab::normalizar`, só dígitos no processo, UF/tribunal em maiúsculas) e,
   em caso de erro, **não redireciona** (evita loop em link compartilhado): a página

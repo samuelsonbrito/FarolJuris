@@ -53,6 +53,7 @@ class StoreExportacaoRequest extends FormRequest
                 'filtros.texto' => ['nullable', 'string', 'min:3', 'max:200'],
                 'filtros.meio' => ['nullable', Rule::in(array_keys(ConsultaRequest::MEIOS))],
                 'filtros.comunicacao' => ['nullable', 'digits_between:1,12'],
+                'filtros.tipo' => ['nullable', Rule::in(ConsultaRequest::TIPOS)],
                 'selecao.*.pagina' => ['required', 'integer', 'min:1', 'max:500'],
                 'selecao.*.hashes' => ['required', 'array', 'min:1', 'max:100'],
                 'selecao.*.hashes.*' => ['required', 'string', 'max:191'],

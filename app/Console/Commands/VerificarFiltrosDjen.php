@@ -27,7 +27,8 @@ use Illuminate\Support\Str;
     {--advogado= : Nome de advogado para testar nomeAdvogado}
     {--texto= : Palavra-chave para testar texto (busca no teor), junto com o tribunal}
     {--meio= : D ou E para testar meio, junto com o tribunal}
-    {--comunicacao= : Número da comunicação para testar numeroComunicacao, junto com o tribunal}')]
+    {--comunicacao= : Número da comunicação para testar numeroComunicacao, junto com o tribunal}
+    {--tipo= : Tipo de comunicação (ex.: Edital) para testar tipoComunicacao, junto com o tribunal}')]
 #[Description('Confere na API real se os parâmetros de filtro do DJEN funcionam')]
 class VerificarFiltrosDjen extends Command
 {
@@ -112,6 +113,12 @@ class VerificarFiltrosDjen extends Command
             $numero = (string) $this->option('comunicacao');
             $this->checar('numeroComunicacao', $client, ['siglaTribunal' => $tribunal, 'numeroComunicacao' => $numero],
                 fn (array $itens) => self::todos($itens, fn ($i) => (string) ($i['numeroComunicacao'] ?? '') === $numero, 'há itens com outro número de comunicação'));
+        }
+
+        if ($this->option('tipo')) {
+            $tipo = (string) $this->option('tipo');
+            $this->checar('tipoComunicacao', $client, ['siglaTribunal' => $tribunal, 'tipoComunicacao' => $tipo],
+                fn (array $itens) => self::todos($itens, fn ($i) => mb_strtolower((string) ($i['tipoComunicacao'] ?? '')) === mb_strtolower($tipo), "há itens de outro tipo que não {$tipo}"));
         }
 
         $this->newLine();

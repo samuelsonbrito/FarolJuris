@@ -206,3 +206,16 @@ it('valida palavra-chave, meio e nº da comunicação', function (array $query, 
     'meio inexistente' => [['meio' => 'X'], 'meio'],
     'comunicação longa' => [['comunicacao' => '1234567890123'], 'comunicacao'],
 ]);
+
+it('filtra por tipo de comunicação e oferece os tipos conhecidos', function () {
+    $this->get(route('consulta.index', ['tribunal' => 'TJAM', 'tipo' => 'Edital']))
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('filtros.tipo', 'Edital')
+            ->where('tipos', ['Intimação', 'Lista de distribuição', 'Edital', 'Pauta de julgamento'])
+            ->where('resultados.data', fn ($itens) => count($itens) > 0 && collect($itens)->every(fn ($c) => $c['tipoComunicacao'] === 'Edital')));
+});
+
+it('recusa tipo de comunicação desconhecido', function () {
+    $this->get(route('consulta.index', ['tribunal' => 'TJAM', 'tipo' => 'Qualquer']))
+        ->assertInertia(fn (Assert $page) => $page->has('errors.tipo')->where('resultados', null));
+});

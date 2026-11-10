@@ -163,3 +163,11 @@ it('lê id, nº da comunicação, meio, classe e polo da resposta real', functio
         ->and($c->codigoClasse)->toBe('1728')
         ->and($c->destinatarios[0]->polo)->toBe('A');
 });
+
+it('envia o tipo de comunicação como tipoComunicacao', function () {
+    Http::fake([API.'/comunicacao*' => Http::response($this->fixture)]);
+
+    app(ComunicacaoGateway::class)->buscar(new FiltroConsulta(numeroOab: '5055', ufOab: 'AM', tipoComunicacao: 'Intimação'));
+
+    Http::assertSent(fn (Request $req) => (queryDe($req)['tipoComunicacao'] ?? null) === 'Intimação');
+});

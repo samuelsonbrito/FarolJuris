@@ -28,6 +28,8 @@ final readonly class FiltroConsulta
         /** `D` (Diário) ou `E` (Plataforma Nacional de Editais). */
         public ?string $meio = null,
         public ?string $numeroComunicacao = null,
+        /** Tipo de comunicação (Intimação, Edital...), como a API escreve. */
+        public ?string $tipoComunicacao = null,
     ) {}
 
     /** Há pelo menos um critério de busca (datas e página não contam). */
@@ -65,6 +67,7 @@ final readonly class FiltroConsulta
             texto: $texto('texto'),
             meio: $texto('meio'),
             numeroComunicacao: $texto('comunicacao'),
+            tipoComunicacao: $texto('tipo'),
         );
     }
 
@@ -87,6 +90,7 @@ final readonly class FiltroConsulta
             'texto' => $this->texto,
             'meio' => $this->meio,
             'comunicacao' => $this->numeroComunicacao,
+            'tipo' => $this->tipoComunicacao,
             'pagina' => $this->pagina,
         ];
     }

@@ -55,6 +55,7 @@ final class Rastreador
             'texto' => $filtro->texto !== null ? mb_substr($filtro->texto, 0, 200) : null,
             'meio' => $filtro->meio,
             'numero_comunicacao' => $filtro->numeroComunicacao,
+            'tipo_comunicacao' => $filtro->tipoComunicacao,
             'data_inicio' => $filtro->dataInicio?->toDateString(),
             'data_fim' => $filtro->dataFim?->toDateString(),
             'pagina' => min($filtro->pagina, 65535),

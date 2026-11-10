@@ -79,27 +79,32 @@ são usados hoje. A referência completa é a fixture `tests/Fixtures/djen/comun
 
 `DjenApiGateway::parametros()` traduz o `FiltroConsulta` do app para a query da API:
 
-| Filtro do app (URL) | `FiltroConsulta`    | Parâmetro enviado à API         | Confirmado? |
-| ------------------- | ------------------- | ------------------------------- | ----------- |
-| `oab`               | `numeroOab`         | `numeroOab`                     | a verificar |
-| `uf`                | `ufOab`             | `ufOab`                         | a verificar |
-| `parte`             | `nomeParte`         | `nomeParte`                     | **sim**     |
-| `advogado`          | `nomeAdvogado`      | `nomeAdvogado`                  | a verificar |
-| `processo`          | `numeroProcesso`    | `numeroProcesso`                | a verificar |
-| `tribunal`          | `tribunal`          | `siglaTribunal`                 | **sim**     |
-| `texto`             | `texto`             | `texto` (palavra-chave no teor) | **sim**     |
-| `inicio`            | `dataInicio`        | `dataDisponibilizacaoInicio`    | **sim**     |
-| `fim`               | `dataFim`           | `dataDisponibilizacaoFim`       | **sim**     |
-| `meio`              | `meio`              | `meio` (`D` ou `E`)             | a verificar |
-| `comunicacao`       | `numeroComunicacao` | `numeroComunicacao`             | a verificar |
-| `pagina`            | `pagina`            | `pagina`                        | a verificar |
-| —                   | `porPagina`         | `itensPorPagina`                | **sim**     |
+| Filtro do app (URL) | `FiltroConsulta`    | Parâmetro enviado à API              | Confirmado?    |
+| ------------------- | ------------------- | ------------------------------------ | -------------- |
+| `oab`               | `numeroOab`         | `numeroOab`                          | indício forte¹ |
+| `uf`                | `ufOab`             | `ufOab`                              | indício forte¹ |
+| `parte`             | `nomeParte`         | `nomeParte`                          | **sim**        |
+| `advogado`          | `nomeAdvogado`      | `nomeAdvogado`                       | a verificar    |
+| `processo`          | `numeroProcesso`    | `numeroProcesso`                     | a verificar    |
+| `tribunal`          | `tribunal`          | `siglaTribunal`                      | **sim**        |
+| `texto`             | `texto`             | `texto` (palavra-chave no teor)      | **sim**        |
+| `inicio`            | `dataInicio`        | `dataDisponibilizacaoInicio`         | **sim**        |
+| `fim`               | `dataFim`           | `dataDisponibilizacaoFim`            | **sim**        |
+| `meio`              | `meio`              | `meio` (`D` ou `E`)                  | a verificar    |
+| `comunicacao`       | `numeroComunicacao` | `numeroComunicacao`                  | a verificar    |
+| `tipo`              | `tipoComunicacao`   | `tipoComunicacao` (ex.: `Intimação`) | a verificar    |
+| `pagina`            | `pagina`            | `pagina`                             | a verificar    |
+| —                   | `porPagina`         | `itensPorPagina`                     | **sim**        |
 
 "**sim**" = visto num request real a `GET /comunicacao` (10/11/2026):
 `siglaTribunal=TJAM&nomeParte=bradesco&texto=alienação fiduciária&dataDisponibilizacaoInicio=2026-11-04&dataDisponibilizacaoFim=2026-11-10&itensPorPagina=100`.
 Os valores de `meio` (`D` = Diário de Justiça Eletrônico Nacional, `E` = Plataforma Nacional
 de Editais) vêm da resposta real; o **nome do parâmetro** `meio`, assim como
-`numeroComunicacao`, ainda precisa ser conferido (`--meio`, `--comunicacao`).
+`numeroComunicacao` e `tipoComunicacao`, ainda precisa ser conferido (`--meio`,
+`--comunicacao`, `--tipo`). Os tipos aceitos pelo app estão em `ConsultaRequest::TIPOS`.
+
+¹ Em produção (10/11/2026), `numeroOab=5055&ufOab=AM` devolveu `count` 1001, e não o teto
+de 10000 de uma consulta sem filtro: o filtro por OAB é aplicado.
 
 > [!NOTE]
 > A certidão da comunicação (PDF) não está implementada: o endereço dela na API ainda não
@@ -114,7 +119,7 @@ de Editais) vêm da resposta real; o **nome do parâmetro** `meio`, assim como
 > `parametros()`) ou **SEM DADOS** (tente outro valor). Precisa rodar no Brasil.
 
 ```bash
-php artisan djen:verificar-filtros --oab=12345 --uf=AM --processo=00012345620248040001 --parte="FULANO" --advogado="CICLANO" --texto="penhora" --meio=E --comunicacao=1
+php artisan djen:verificar-filtros --oab=12345 --uf=AM --processo=00012345620248040001 --parte="FULANO" --advogado="CICLANO" --texto="penhora" --meio=E --comunicacao=1 --tipo=Edital
 ```
 
 ## DjenClient

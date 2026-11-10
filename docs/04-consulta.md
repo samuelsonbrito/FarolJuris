@@ -27,6 +27,7 @@ A URL é a fonte da verdade: qualquer busca pode ser compartilhada por link.
 | `texto`       | 3 a 200 caracteres (palavra-chave no teor) | apara espaços                                     |
 | `meio`        | `D` ou `E` (`ConsultaRequest::MEIOS`)      | maiúsculas                                        |
 | `comunicacao` | 1 a 12 dígitos (nº da comunicação)         | só dígitos                                        |
+| `tipo`        | um de `ConsultaRequest::TIPOS`             | —                                                 |
 | `pagina`      | 1 a 500                                    | —                                                 |
 
 **Só busca se houver critério**: OAB, parte, advogado, processo, tribunal ou palavra-chave. Datas e

@@ -22,6 +22,7 @@ const vazio: FiltrosConsulta = {
     texto: null,
     meio: null,
     comunicacao: null,
+    tipo: null,
 };
 
 function montar(filtros: Partial<FiltrosConsulta> = {}, extra = {}) {
@@ -271,6 +272,36 @@ describe('FiltroBusca', () => {
 
         expect(wrapper.emitted('buscar')).toEqual([
             [{ ...vazio, texto: 'penhora' }],
+        ]);
+    });
+
+    it('filtra por tipo de comunicação na hora', async () => {
+        const wrapper = montar(
+            { oab: '5055', uf: 'AM' },
+            {
+                tipos: [
+                    'Intimação',
+                    'Lista de distribuição',
+                    'Edital',
+                    'Pauta de julgamento',
+                ],
+            },
+        );
+
+        expect(
+            wrapper.findAll('#filtro-tipo option').map((o) => o.text()),
+        ).toEqual([
+            'Todos',
+            'Intimação',
+            'Lista de distribuição',
+            'Edital',
+            'Pauta de julgamento',
+        ]);
+
+        await wrapper.find('#filtro-tipo').setValue('Edital');
+
+        expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
+            { ...vazio, oab: '5055', uf: 'AM', tipo: 'Edital' },
         ]);
     });
 });
