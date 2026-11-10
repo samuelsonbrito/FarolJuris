@@ -28,6 +28,7 @@ class ResultadoConsultaResource extends JsonResource
                 'porPagina' => $r->porPagina,
                 'total' => $r->total,
                 'ultimaPagina' => $r->ultimaPagina(),
+                'filtroParcial' => $r->filtroParcial,
             ],
         ];
     }

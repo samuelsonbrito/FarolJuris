@@ -164,10 +164,45 @@ it('lê id, nº da comunicação, meio, classe e polo da resposta real', functio
         ->and($c->destinatarios[0]->polo)->toBe('A');
 });
 
-it('envia o tipo de comunicação como tipoComunicacao', function () {
-    Http::fake([API.'/comunicacao*' => Http::response($this->fixture)]);
+/** Página da API com `$n` itens (hashes únicos), alternando Intimação e Edital. */
+function paginaDeTipos(array $base, int $pagina, int $n, int $total): array
+{
+    $itens = [];
 
-    app(ComunicacaoGateway::class)->buscar(new FiltroConsulta(numeroOab: '5055', ufOab: 'AM', tipoComunicacao: 'Intimação'));
+    for ($k = 0; $k < $n; $k++) {
+        $itens[] = [...$base, 'hash' => "h{$pagina}-{$k}", 'tipoComunicacao' => $k % 2 === 0 ? 'Intimação' : 'Edital'];
+    }
 
-    Http::assertSent(fn (Request $req) => (queryDe($req)['tipoComunicacao'] ?? null) === 'Intimação');
+    return ['status' => 'success', 'message' => '', 'count' => $total, 'items' => $itens];
+}
+
+it('filtra o tipo no servidor, porque a API ignora tipoComunicacao', function () {
+    config(['djen.filtro_tipo.itens_por_pagina' => 4, 'djen.filtro_tipo.max_paginas' => 10]);
+    $base = $this->fixture['items'][0];
+    Http::fake(fn (Request $req) => Http::response(match ((int) queryDe($req)['pagina']) {
+        1 => paginaDeTipos($base, 1, 4, 10),
+        2 => paginaDeTipos($base, 2, 4, 10),
+        3 => paginaDeTipos($base, 3, 2, 10),
+    }));
+
+    $r = app(ComunicacaoGateway::class)->buscar(new FiltroConsulta(numeroOab: '5055', ufOab: 'AM', tipoComunicacao: 'edital', porPagina: 2, pagina: 2));
+
+    Http::assertSentCount(3);
+    Http::assertSent(fn (Request $req) => ! array_key_exists('tipoComunicacao', queryDe($req)) && queryDe($req)['itensPorPagina'] === '4');
+    expect($r->total)->toBe(5)
+        ->and($r->pagina)->toBe(2)
+        ->and(array_map(fn ($c) => $c->hash, $r->comunicacoes))->toBe(['h2-1', 'h2-3'])
+        ->and($r->filtroParcial)->toBeNull();
+});
+
+it('marca como parcial o filtro por tipo que não analisou tudo', function () {
+    config(['djen.filtro_tipo.itens_por_pagina' => 4, 'djen.filtro_tipo.max_paginas' => 2]);
+    $base = $this->fixture['items'][0];
+    Http::fake(fn (Request $req) => Http::response(paginaDeTipos($base, (int) queryDe($req)['pagina'], 4, 1001)));
+
+    $r = app(ComunicacaoGateway::class)->buscar(new FiltroConsulta(numeroOab: '5055', ufOab: 'AM', tipoComunicacao: 'Intimação'));
+
+    Http::assertSentCount(2);
+    expect($r->total)->toBe(4)
+        ->and($r->filtroParcial)->toBe(['analisadas' => 8, 'totalApi' => 1001]);
 });

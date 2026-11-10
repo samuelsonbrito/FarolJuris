@@ -124,12 +124,14 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   advogado placeholder "SISTEMA DE CITAÇÃO E INTIMAÇÃO ELETRÔNICA" (OAB 99999999);
   `nomeClasse` com caixa quebrada (normalizado com `mb_strtoupper` e exibido no painel).
 - Parâmetros enviados (`DjenApiGateway::parametros()`): `numeroOab, ufOab, nomeParte,
-  nomeAdvogado, numeroProcesso, siglaTribunal, texto, meio, numeroComunicacao, tipoComunicacao,
+  nomeAdvogado, numeroProcesso, siglaTribunal, texto, meio, numeroComunicacao,
   dataDisponibilizacaoInicio/Fim (Y-m-d), pagina, itensPorPagina`. **Vistos num request real**
   (10/11/2026): `siglaTribunal, nomeParte, texto, dataDisponibilizacaoInicio/Fim, itensPorPagina`.
   Os demais vêm da documentação pública e são **conferidos no servidor** por
   `djen:verificar-filtros` (um nome errado é ignorado pela API, e o comando detecta).
-- Tipo (`tipo` → `tipoComunicacao`, não confirmado): um de `ConsultaRequest::TIPOS`. O filtro por OAB
+- Tipo (`tipo`): um de `ConsultaRequest::TIPOS`. A API **ignora** `tipoComunicacao` (produção, 10/11/2026),
+  então `DjenApiGateway::buscarPorTipo()` filtra aqui sobre até `djen.filtro_tipo.max_paginas` páginas
+  de 100 (cache por página) e pagina localmente; além disso, `meta.filtroParcial` e aviso na tela. O filtro por OAB
   funciona (produção, 10/11/2026: `numeroOab=5055&ufOab=AM` → count 1001, não o teto de 10000).
 - `meio`: `D` (Diário de Justiça Eletrônico Nacional) ou `E` (Plataforma Nacional de Editais),
   `ConsultaRequest::MEIOS`. Certidão em PDF: endpoint ainda não visto, não implementada.

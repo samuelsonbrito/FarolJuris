@@ -16,7 +16,8 @@ use App\Services\Djen\Mapping\ComunicacaoApiMapper;
  * Parâmetros de GET /comunicacao vistos em requests reais: `siglaTribunal`,
  * `nomeParte`, `texto`, `dataDisponibilizacaoInicio/Fim` e `itensPorPagina`.
  * Os demais seguem a documentação pública e são conferidos no servidor por
- * `php artisan djen:verificar-filtros`.
+ * `php artisan djen:verificar-filtros`. O tipo de comunicação a API ignora: é filtrado aqui
+ * (`buscarPorTipo`).
  */
 final class DjenApiGateway implements ComunicacaoGateway
 {
@@ -27,9 +28,65 @@ final class DjenApiGateway implements ComunicacaoGateway
 
     public function buscar(FiltroConsulta $filtro): ResultadoConsulta
     {
+        if ($filtro->tipoComunicacao !== null) {
+            return $this->buscarPorTipo($filtro);
+        }
+
         $resposta = $this->client->getCached('comunicacao', self::parametros($filtro));
 
         return $this->mapper->resultado($resposta->json, $filtro->pagina, $filtro->porPagina, $resposta->fromCache);
+    }
+
+    /**
+     * A API ignora `tipoComunicacao` (em produção o total não mudava com o tipo), então o
+     * filtro é feito aqui: busca as páginas da API (cada uma no cache do DjenClient), guarda
+     * as do tipo pedido e pagina localmente. Analisa no máximo `djen.filtro_tipo.max_paginas`
+     * páginas; acima disso o resultado vem marcado como parcial.
+     */
+    private function buscarPorTipo(FiltroConsulta $filtro): ResultadoConsulta
+    {
+        $porPaginaApi = max(1, (int) config('djen.filtro_tipo.itens_por_pagina', 100));
+        $maxPaginas = max(1, (int) config('djen.filtro_tipo.max_paginas', 10));
+        $tipo = mb_strtolower(trim($filtro->tipoComunicacao));
+
+        $doTipo = [];
+        $analisadas = 0;
+        $totalApi = 0;
+        $doCache = true;
+
+        for ($pagina = 1; $pagina <= $maxPaginas; $pagina++) {
+            $resposta = $this->client->getCached('comunicacao', [
+                ...self::parametros($filtro),
+                'pagina' => $pagina,
+                'itensPorPagina' => $porPaginaApi,
+            ]);
+            $parcial = $this->mapper->resultado($resposta->json, $pagina, $porPaginaApi, $resposta->fromCache);
+
+            $doCache = $doCache && $resposta->fromCache;
+            $totalApi = $parcial->total;
+            $analisadas += count($parcial->comunicacoes);
+
+            foreach ($parcial->comunicacoes as $c) {
+                if (mb_strtolower(trim((string) $c->tipoComunicacao)) === $tipo) {
+                    $doTipo[] = $c;
+                }
+            }
+
+            if (count($parcial->comunicacoes) < $porPaginaApi || $analisadas >= $totalApi) {
+                break;
+            }
+        }
+
+        $porPagina = max(1, $filtro->porPagina);
+
+        return new ResultadoConsulta(
+            comunicacoes: array_slice($doTipo, ($filtro->pagina - 1) * $porPagina, $porPagina),
+            total: count($doTipo),
+            pagina: $filtro->pagina,
+            porPagina: $porPagina,
+            doCache: $doCache,
+            filtroParcial: $analisadas < $totalApi ? ['analisadas' => $analisadas, 'totalApi' => $totalApi] : null,
+        );
     }
 
     public function tribunais(): array
@@ -56,7 +113,6 @@ final class DjenApiGateway implements ComunicacaoGateway
             'texto' => $f->texto,
             'meio' => $f->meio,
             'numeroComunicacao' => $f->numeroComunicacao,
-            'tipoComunicacao' => $f->tipoComunicacao,
             'dataDisponibilizacaoInicio' => $f->dataInicio?->toDateString(),
             'dataDisponibilizacaoFim' => $f->dataFim?->toDateString(),
             'pagina' => $f->pagina,

@@ -79,32 +79,40 @@ são usados hoje. A referência completa é a fixture `tests/Fixtures/djen/comun
 
 `DjenApiGateway::parametros()` traduz o `FiltroConsulta` do app para a query da API:
 
-| Filtro do app (URL) | `FiltroConsulta`    | Parâmetro enviado à API              | Confirmado?    |
-| ------------------- | ------------------- | ------------------------------------ | -------------- |
-| `oab`               | `numeroOab`         | `numeroOab`                          | indício forte¹ |
-| `uf`                | `ufOab`             | `ufOab`                              | indício forte¹ |
-| `parte`             | `nomeParte`         | `nomeParte`                          | **sim**        |
-| `advogado`          | `nomeAdvogado`      | `nomeAdvogado`                       | a verificar    |
-| `processo`          | `numeroProcesso`    | `numeroProcesso`                     | a verificar    |
-| `tribunal`          | `tribunal`          | `siglaTribunal`                      | **sim**        |
-| `texto`             | `texto`             | `texto` (palavra-chave no teor)      | **sim**        |
-| `inicio`            | `dataInicio`        | `dataDisponibilizacaoInicio`         | **sim**        |
-| `fim`               | `dataFim`           | `dataDisponibilizacaoFim`            | **sim**        |
-| `meio`              | `meio`              | `meio` (`D` ou `E`)                  | a verificar    |
-| `comunicacao`       | `numeroComunicacao` | `numeroComunicacao`                  | a verificar    |
-| `tipo`              | `tipoComunicacao`   | `tipoComunicacao` (ex.: `Intimação`) | a verificar    |
-| `pagina`            | `pagina`            | `pagina`                             | a verificar    |
-| —                   | `porPagina`         | `itensPorPagina`                     | **sim**        |
+| Filtro do app (URL) | `FiltroConsulta`    | Parâmetro enviado à API         | Confirmado?           |
+| ------------------- | ------------------- | ------------------------------- | --------------------- |
+| `oab`               | `numeroOab`         | `numeroOab`                     | indício forte¹        |
+| `uf`                | `ufOab`             | `ufOab`                         | indício forte¹        |
+| `parte`             | `nomeParte`         | `nomeParte`                     | **sim**               |
+| `advogado`          | `nomeAdvogado`      | `nomeAdvogado`                  | a verificar           |
+| `processo`          | `numeroProcesso`    | `numeroProcesso`                | a verificar           |
+| `tribunal`          | `tribunal`          | `siglaTribunal`                 | **sim**               |
+| `texto`             | `texto`             | `texto` (palavra-chave no teor) | **sim**               |
+| `inicio`            | `dataInicio`        | `dataDisponibilizacaoInicio`    | **sim**               |
+| `fim`               | `dataFim`           | `dataDisponibilizacaoFim`       | **sim**               |
+| `meio`              | `meio`              | `meio` (`D` ou `E`)             | a verificar           |
+| `comunicacao`       | `numeroComunicacao` | `numeroComunicacao`             | a verificar           |
+| `tipo`              | `tipoComunicacao`   | — (filtrado no nosso servidor²) | **ignorado pela API** |
+| `pagina`            | `pagina`            | `pagina`                        | a verificar           |
+| —                   | `porPagina`         | `itensPorPagina`                | **sim**               |
 
 "**sim**" = visto num request real a `GET /comunicacao` (10/11/2026):
 `siglaTribunal=TJAM&nomeParte=bradesco&texto=alienação fiduciária&dataDisponibilizacaoInicio=2026-11-04&dataDisponibilizacaoFim=2026-11-10&itensPorPagina=100`.
 Os valores de `meio` (`D` = Diário de Justiça Eletrônico Nacional, `E` = Plataforma Nacional
 de Editais) vêm da resposta real; o **nome do parâmetro** `meio`, assim como
-`numeroComunicacao` e `tipoComunicacao`, ainda precisa ser conferido (`--meio`,
-`--comunicacao`, `--tipo`). Os tipos aceitos pelo app estão em `ConsultaRequest::TIPOS`.
+`numeroComunicacao`, ainda precisa ser conferido (`--meio`, `--comunicacao`). Os tipos aceitos
+pelo app estão em `ConsultaRequest::TIPOS`.
 
 ¹ Em produção (10/11/2026), `numeroOab=5055&ufOab=AM` devolveu `count` 1001, e não o teto
 de 10000 de uma consulta sem filtro: o filtro por OAB é aplicado.
+
+² Em produção (10/11/2026), `tipoComunicacao=Edital` (ou qualquer outro tipo) devolvia o mesmo
+`count` 1001 da busca sem tipo: a API ignora o parâmetro. Por isso `DjenApiGateway::buscarPorTipo()`
+busca as páginas da API (`DJEN_FILTRO_TIPO_ITENS_POR_PAGINA`, 100), no máximo
+`DJEN_FILTRO_TIPO_MAX_PAGINAS` (10), cada uma no cache, guarda as do tipo pedido e pagina aqui. Se
+a API tiver mais comunicações que isso, o resultado vem com `meta.filtroParcial
+{analisadas, totalApi}` e a tela avisa para reduzir o período. `djen:verificar-filtros --tipo`
+continua disponível para conferir se algum dia a API passar a filtrar.
 
 > [!NOTE]
 > A certidão da comunicação (PDF) não está implementada: o endereço dela na API ainda não

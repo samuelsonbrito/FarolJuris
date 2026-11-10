@@ -14,6 +14,13 @@ final readonly class ResultadoConsulta
         public int $porPagina,
         /** A resposta veio do cache do DjenClient (sem chamar o CNJ). */
         public bool $doCache = false,
+        /**
+         * Filtro por tipo feito no nosso servidor sobre só parte do resultado da API:
+         * quantas comunicações foram analisadas e quantas a API tinha. Nulo = análise completa.
+         *
+         * @var array{analisadas: int, totalApi: int}|null
+         */
+        public ?array $filtroParcial = null,
     ) {}
 
     public function ultimaPagina(): int
