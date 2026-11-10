@@ -52,6 +52,9 @@ final class Rastreador
             'advogado' => $filtro->nomeAdvogado,
             'processo' => $filtro->numeroProcesso,
             'tribunal' => $filtro->tribunal,
+            'texto' => $filtro->texto !== null ? mb_substr($filtro->texto, 0, 200) : null,
+            'meio' => $filtro->meio,
+            'numero_comunicacao' => $filtro->numeroComunicacao,
             'data_inicio' => $filtro->dataInicio?->toDateString(),
             'data_fim' => $filtro->dataFim?->toDateString(),
             'pagina' => min($filtro->pagina, 65535),
@@ -114,6 +117,7 @@ final class Rastreador
             $f->numeroOab !== null => 'oab',
             $f->nomeParte !== null => 'parte',
             $f->nomeAdvogado !== null => 'advogado',
+            $f->texto !== null => 'texto',
             $f->tribunal !== null => 'tribunal',
             default => null,
         };

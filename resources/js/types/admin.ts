@@ -81,7 +81,10 @@ export interface DashboardProps {
     sistemas: Fatia[];
     referencias: Fatia[];
     paginas: Fatia[];
-    termos: Record<'oab' | 'parte' | 'advogado' | 'processo', Fatia[]>;
+    termos: Record<
+        'oab' | 'parte' | 'advogado' | 'processo' | 'texto',
+        Fatia[]
+    >;
     cnj: ResumoCnj;
 }
 

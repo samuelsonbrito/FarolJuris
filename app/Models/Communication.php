@@ -21,10 +21,16 @@ use Illuminate\Support\Carbon;
  * @property string|null $tipo_documento
  * @property Carbon $data_disponibilizacao
  * @property string $numero_processo
- * @property list<array{nome: string}> $destinatarios
+ * @property list<array{nome: string, polo?: string|null}> $destinatarios
  * @property list<array{nome: string, numeroOab: string|null, ufOab: string|null}> $advogados
  * @property string $texto_html
  * @property string|null $link_documento
+ * @property int|null $cnj_id
+ * @property string|null $numero_comunicacao
+ * @property string|null $meio
+ * @property string|null $meio_completo
+ * @property string|null $classe
+ * @property string|null $codigo_classe
  */
 class Communication extends Model
 {
@@ -34,6 +40,7 @@ class Communication extends Model
         'hash', 'tribunal', 'orgao_julgador', 'tipo_comunicacao', 'tipo_documento',
         'data_disponibilizacao', 'numero_processo', 'destinatarios', 'advogados',
         'texto_html', 'link_documento',
+        'cnj_id', 'numero_comunicacao', 'meio', 'meio_completo', 'classe', 'codigo_classe',
     ];
 
     protected function casts(): array
@@ -81,12 +88,18 @@ class Communication extends Model
             'tipo_documento' => $c->tipoDocumento,
             'data_disponibilizacao' => $c->dataDisponibilizacao->toDateString(),
             'numero_processo' => $c->numeroProcesso,
-            'destinatarios' => array_map(fn (DestinatarioData $d): array => ['nome' => $d->nome], $c->destinatarios),
+            'destinatarios' => array_map(fn (DestinatarioData $d): array => ['nome' => $d->nome, 'polo' => $d->polo], $c->destinatarios),
             'advogados' => array_map(fn (AdvogadoData $a): array => [
                 'nome' => $a->nome, 'numeroOab' => $a->numeroOab, 'ufOab' => $a->ufOab,
             ], $c->advogados),
             'texto_html' => $c->textoHtml,
             'link_documento' => $c->linkDocumento,
+            'cnj_id' => $c->idCnj,
+            'numero_comunicacao' => $c->numeroComunicacao,
+            'meio' => $c->meio,
+            'meio_completo' => $c->meioCompleto,
+            'classe' => $c->classe,
+            'codigo_classe' => $c->codigoClasse,
         ];
     }
 
@@ -100,10 +113,16 @@ class Communication extends Model
             tipoDocumento: $this->tipo_documento,
             dataDisponibilizacao: CarbonImmutable::parse($this->data_disponibilizacao->toDateString()),
             numeroProcesso: $this->numero_processo,
-            destinatarios: array_map(fn (array $d): DestinatarioData => new DestinatarioData($d['nome']), $this->destinatarios),
+            destinatarios: array_map(fn (array $d): DestinatarioData => new DestinatarioData($d['nome'], $d['polo'] ?? null), $this->destinatarios),
             advogados: array_map(fn (array $a): AdvogadoData => new AdvogadoData($a['nome'], $a['numeroOab'] ?? null, $a['ufOab'] ?? null), $this->advogados),
             textoHtml: $this->texto_html,
             linkDocumento: $this->link_documento,
+            idCnj: $this->cnj_id,
+            numeroComunicacao: $this->numero_comunicacao,
+            meio: $this->meio,
+            meioCompleto: $this->meio_completo,
+            classe: $this->classe,
+            codigoClasse: $this->codigo_classe,
         );
     }
 }

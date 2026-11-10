@@ -23,6 +23,11 @@ final readonly class FiltroConsulta
         public ?CarbonImmutable $dataFim = null,
         public int $pagina = 1,
         public int $porPagina = 20,
+        /** Palavra-chave no teor (parâmetro `texto` da API). */
+        public ?string $texto = null,
+        /** `D` (Diário) ou `E` (Plataforma Nacional de Editais). */
+        public ?string $meio = null,
+        public ?string $numeroComunicacao = null,
     ) {}
 
     /** Há pelo menos um critério de busca (datas e página não contam). */
@@ -32,7 +37,8 @@ final readonly class FiltroConsulta
             || $this->nomeParte !== null
             || $this->nomeAdvogado !== null
             || $this->numeroProcesso !== null
-            || $this->tribunal !== null;
+            || $this->tribunal !== null
+            || $this->texto !== null;
     }
 
     /**
@@ -56,6 +62,9 @@ final readonly class FiltroConsulta
             dataFim: $data('fim'),
             pagina: $pagina,
             porPagina: $porPagina,
+            texto: $texto('texto'),
+            meio: $texto('meio'),
+            numeroComunicacao: $texto('comunicacao'),
         );
     }
 
@@ -75,6 +84,9 @@ final readonly class FiltroConsulta
             'tribunal' => $this->tribunal,
             'inicio' => $this->dataInicio?->toDateString(),
             'fim' => $this->dataFim?->toDateString(),
+            'texto' => $this->texto,
+            'meio' => $this->meio,
+            'comunicacao' => $this->numeroComunicacao,
             'pagina' => $this->pagina,
         ];
     }

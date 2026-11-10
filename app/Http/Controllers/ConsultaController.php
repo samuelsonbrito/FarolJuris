@@ -49,11 +49,15 @@ class ConsultaController extends Controller
                 'tribunal' => $request->query('tribunal'),
                 'inicio' => $request->query('inicio'),
                 'fim' => $request->query('fim'),
+                'texto' => $request->query('texto'),
+                'meio' => $request->query('meio'),
+                'comunicacao' => $request->query('comunicacao'),
             ],
             'resultados' => $resultados,
             'erro' => $erro,
             'tribunais' => fn (): array => $this->tribunais($gateway),
             'ufs' => ConsultaRequest::UFS,
+            'meios' => ConsultaRequest::MEIOS,
         ];
 
         if ($request->invalido()) {

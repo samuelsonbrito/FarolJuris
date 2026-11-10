@@ -62,6 +62,13 @@ final class ComunicacaoApiMapper
             advogados: self::advogados($item['destinatarioadvogados'] ?? []),
             textoHtml: self::html((string) ($item['texto'] ?? '')),
             linkDocumento: self::texto($item['link'] ?? null),
+            idCnj: is_int($item['id'] ?? null) ? $item['id'] : null,
+            numeroComunicacao: is_scalar($item['numeroComunicacao'] ?? null) ? (string) $item['numeroComunicacao'] : null,
+            meio: self::texto($item['meio'] ?? null),
+            meioCompleto: self::texto($item['meiocompleto'] ?? null),
+            // A API devolve a classe com a caixa quebrada ("APELAçãO"): tudo em maiúsculas resolve.
+            classe: ($classe = self::texto($item['nomeClasse'] ?? null)) !== null ? mb_strtoupper($classe) : null,
+            codigoClasse: is_scalar($item['codigoClasse'] ?? null) && (string) $item['codigoClasse'] !== '' ? (string) $item['codigoClasse'] : null,
         );
     }
 
@@ -94,7 +101,7 @@ final class ComunicacaoApiMapper
             $nome = self::texto($d['nome'] ?? null);
 
             if ($nome !== null) {
-                $vistos[mb_strtoupper($nome)] ??= new DestinatarioData($nome);
+                $vistos[mb_strtoupper($nome)] ??= new DestinatarioData($nome, self::texto($d['polo'] ?? null));
             }
         }
 

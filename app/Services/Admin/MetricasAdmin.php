@@ -23,6 +23,7 @@ final class MetricasAdmin
         'oab' => 'OAB',
         'parte' => 'Nome da parte',
         'advogado' => 'Nome do advogado',
+        'texto' => 'Palavra-chave no teor',
         'processo' => 'Número do processo',
         'tribunal' => 'Só tribunal',
     ];
@@ -172,6 +173,7 @@ final class MetricasAdmin
             'parte' => $top('upper(parte)', 'parte'),
             'advogado' => $top('upper(advogado)', 'advogado'),
             'processo' => $top('processo', 'processo'),
+            'texto' => $top('lower(texto)', 'texto'),
         ];
     }
 

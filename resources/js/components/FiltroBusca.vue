@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
-import { Search, X } from '@lucide/vue';
-import { computed, onBeforeUnmount } from 'vue';
+import { ChevronDown, Search, SlidersHorizontal, X } from '@lucide/vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,8 @@ import {
     normalizarOab,
     somenteDigitos,
 } from '@/lib/cnj';
+import type { AtalhoData } from '@/lib/datas';
+import { ATALHOS_DATA, atalhoAtivo, intervaloDoAtalho } from '@/lib/datas';
 import type { FiltrosConsulta, Tribunal } from '@/types/djen';
 
 const props = withDefaults(
@@ -19,12 +21,14 @@ const props = withDefaults(
         filtros: FiltrosConsulta;
         tribunais: Tribunal[];
         ufs: string[];
+        /** Meios de publicação (código → nome), de ConsultaRequest::MEIOS. */
+        meios?: Record<string, string>;
         erros?: Partial<Record<keyof FiltrosConsulta, string>>;
         carregando?: boolean;
         /** Espera (ms) após a digitação antes de buscar. */
         debounce?: number;
     }>(),
-    { erros: () => ({}), carregando: false, debounce: 700 },
+    { meios: () => ({}), erros: () => ({}), carregando: false, debounce: 700 },
 );
 
 const emit = defineEmits<{ buscar: [filtros: FiltrosConsulta] }>();
@@ -38,7 +42,15 @@ const form = useForm<Record<keyof FiltrosConsulta, string>>({
     tribunal: props.filtros.tribunal ?? '',
     inicio: props.filtros.inicio ?? '',
     fim: props.filtros.fim ?? '',
+    texto: props.filtros.texto ?? '',
+    meio: props.filtros.meio ?? '',
+    comunicacao: props.filtros.comunicacao ?? '',
 });
+
+/** Os filtros avançados começam abertos quando algum deles veio na URL. */
+const avancadosAbertos = ref(
+    Boolean(props.filtros.meio || props.filtros.comunicacao),
+);
 
 const selectClass =
     'h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive dark:bg-input/30';
@@ -55,6 +67,9 @@ function normalizado(): FiltrosConsulta {
         tribunal: valor(form.tribunal),
         inicio: valor(form.inicio),
         fim: valor(form.fim),
+        texto: valor(form.texto),
+        meio: valor(form.meio),
+        comunicacao: valor(somenteDigitos(form.comunicacao)),
     };
 }
 
@@ -62,9 +77,9 @@ function normalizado(): FiltrosConsulta {
 const prontoParaBuscaAutomatica = computed(() => {
     const f = normalizado();
     const temCriterio = Boolean(
-        f.oab || f.parte || f.advogado || f.processo || f.tribunal,
+        f.oab || f.parte || f.advogado || f.processo || f.tribunal || f.texto,
     );
-    const textoCurto = [f.parte, f.advogado].some(
+    const textoCurto = [f.parte, f.advogado, f.texto].some(
         (v) => v !== null && v.length < 3,
     );
     const processoIncompleto = f.processo !== null && !cnjCompleto(f.processo);
@@ -120,6 +135,15 @@ function aoMudarSelecaoOuData() {
     }
 }
 
+const atalho = computed(() => atalhoAtivo(form.inicio, form.fim));
+
+function aplicarAtalho(chave: AtalhoData) {
+    const { inicio, fim } = intervaloDoAtalho(chave);
+    form.inicio = inicio ?? '';
+    form.fim = fim ?? '';
+    aoMudarSelecaoOuData();
+}
+
 function limpar() {
     form.oab = '';
     form.uf = '';
@@ -129,6 +153,9 @@ function limpar() {
     form.tribunal = '';
     form.inicio = '';
     form.fim = '';
+    form.texto = '';
+    form.meio = '';
+    form.comunicacao = '';
     buscarAgora();
 }
 
@@ -191,7 +218,7 @@ defineExpose({ form });
             </div>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-3">
             <div class="grid gap-1.5">
                 <Label for="filtro-parte">Nome da parte</Label>
                 <Input
@@ -199,6 +226,7 @@ defineExpose({ form });
                     v-model="form.parte"
                     name="parte"
                     autocomplete="off"
+                    placeholder="Pessoa ou empresa"
                     :aria-invalid="Boolean(erros.parte)"
                     @update:model-value="buscarComDebounce"
                 />
@@ -215,6 +243,26 @@ defineExpose({ form });
                     @update:model-value="buscarComDebounce"
                 />
                 <InputError :message="erros.advogado" />
+            </div>
+            <div class="grid gap-1.5">
+                <Label for="filtro-texto">Palavra-chave no teor</Label>
+                <Input
+                    id="filtro-texto"
+                    v-model="form.texto"
+                    name="texto"
+                    autocomplete="off"
+                    placeholder="Ex.: alienação fiduciária"
+                    aria-describedby="filtro-texto-ajuda"
+                    :aria-invalid="Boolean(erros.texto)"
+                    @update:model-value="buscarComDebounce"
+                />
+                <p
+                    id="filtro-texto-ajuda"
+                    class="text-xs text-muted-foreground"
+                >
+                    Procura dentro do texto da comunicação.
+                </p>
+                <InputError :message="erros.texto" />
             </div>
         </div>
 
@@ -264,6 +312,89 @@ defineExpose({ form });
                     @change="aoMudarSelecaoOuData"
                 />
                 <InputError :message="erros.fim" />
+            </div>
+        </div>
+
+        <div
+            class="flex flex-wrap gap-1.5"
+            role="group"
+            aria-label="Atalhos de período"
+        >
+            <button
+                v-for="a in ATALHOS_DATA"
+                :key="a.chave"
+                type="button"
+                class="rounded-full border px-3 py-1 text-xs transition-colors"
+                :class="
+                    atalho === a.chave
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                "
+                :aria-pressed="atalho === a.chave"
+                :data-testid="`atalho-${a.chave}`"
+                @click="aplicarAtalho(a.chave)"
+            >
+                {{ a.rotulo }}
+            </button>
+        </div>
+
+        <div class="rounded-lg border border-dashed">
+            <button
+                type="button"
+                class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:text-foreground"
+                :aria-expanded="avancadosAbertos"
+                aria-controls="filtros-avancados"
+                data-testid="alternar-avancados"
+                @click="avancadosAbertos = !avancadosAbertos"
+            >
+                <SlidersHorizontal class="size-4" aria-hidden="true" />
+                Filtros avançados
+                <span class="font-normal">(meio e nº da comunicação)</span>
+                <ChevronDown
+                    class="ml-auto size-4 transition-transform"
+                    :class="avancadosAbertos && 'rotate-180'"
+                    aria-hidden="true"
+                />
+            </button>
+            <div
+                v-show="avancadosAbertos"
+                id="filtros-avancados"
+                class="grid gap-4 border-t px-3 pt-3 pb-4 md:grid-cols-3"
+            >
+                <div class="grid gap-1.5">
+                    <Label for="filtro-meio">Meio de publicação</Label>
+                    <select
+                        id="filtro-meio"
+                        v-model="form.meio"
+                        name="meio"
+                        :class="selectClass"
+                        :aria-invalid="Boolean(erros.meio)"
+                        @change="aoMudarSelecaoOuData"
+                    >
+                        <option value="">Todos</option>
+                        <option
+                            v-for="(nome, codigo) in meios"
+                            :key="codigo"
+                            :value="codigo"
+                        >
+                            {{ nome }}
+                        </option>
+                    </select>
+                    <InputError :message="erros.meio" />
+                </div>
+                <div class="grid gap-1.5">
+                    <Label for="filtro-comunicacao">Nº da comunicação</Label>
+                    <Input
+                        id="filtro-comunicacao"
+                        v-model="form.comunicacao"
+                        name="comunicacao"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        :aria-invalid="Boolean(erros.comunicacao)"
+                        @update:model-value="buscarComDebounce"
+                    />
+                    <InputError :message="erros.comunicacao" />
+                </div>
             </div>
         </div>
 

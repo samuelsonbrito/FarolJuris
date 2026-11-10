@@ -14,19 +14,22 @@ Busca pública (sem login) nas comunicações do DJEN.
 
 A URL é a fonte da verdade: qualquer busca pode ser compartilhada por link.
 
-| Parâmetro  | Regra                             | Normalização                                      |
-| ---------- | --------------------------------- | ------------------------------------------------- |
-| `oab`      | `^\d{1,8}(-?[A-Z])?$`, exige `uf` | maiúsculas; remove "OAB", espaços, pontos, barras |
-| `uf`       | uma das 27 UFs, exige `oab`       | maiúsculas                                        |
-| `parte`    | 3 a 120 caracteres                | apara espaços                                     |
-| `advogado` | 3 a 120 caracteres                | apara espaços                                     |
-| `processo` | exatamente 20 dígitos             | remove tudo que não é dígito (aceita a máscara)   |
-| `tribunal` | `[A-Z0-9]+`, até 20               | maiúsculas                                        |
-| `inicio`   | `AAAA-MM-DD`                      | —                                                 |
-| `fim`      | `AAAA-MM-DD`, `>= inicio`         | —                                                 |
-| `pagina`   | 1 a 500                           | —                                                 |
+| Parâmetro     | Regra                                      | Normalização                                      |
+| ------------- | ------------------------------------------ | ------------------------------------------------- |
+| `oab`         | `^\d{1,8}(-?[A-Z])?$`, exige `uf`          | maiúsculas; remove "OAB", espaços, pontos, barras |
+| `uf`          | uma das 27 UFs, exige `oab`                | maiúsculas                                        |
+| `parte`       | 3 a 120 caracteres                         | apara espaços                                     |
+| `advogado`    | 3 a 120 caracteres                         | apara espaços                                     |
+| `processo`    | exatamente 20 dígitos                      | remove tudo que não é dígito (aceita a máscara)   |
+| `tribunal`    | `[A-Z0-9]+`, até 20                        | maiúsculas                                        |
+| `inicio`      | `AAAA-MM-DD`                               | —                                                 |
+| `fim`         | `AAAA-MM-DD`, `>= inicio`                  | —                                                 |
+| `texto`       | 3 a 200 caracteres (palavra-chave no teor) | apara espaços                                     |
+| `meio`        | `D` ou `E` (`ConsultaRequest::MEIOS`)      | maiúsculas                                        |
+| `comunicacao` | 1 a 12 dígitos (nº da comunicação)         | só dígitos                                        |
+| `pagina`      | 1 a 500                                    | —                                                 |
 
-**Só busca se houver critério**: OAB, parte, advogado, processo ou tribunal. Datas e
+**Só busca se houver critério**: OAB, parte, advogado, processo, tribunal ou palavra-chave. Datas e
 página sozinhas não disparam consulta (`FiltroConsulta::temCriterio()`).
 
 ### Erro de validação não redireciona
@@ -80,8 +83,17 @@ o tempo de espera (`Retry-After`).
   filtros na URL.
 - **Resultados**: `CardComunicacao` (tribunal, órgão, tipo, data, processo, partes,
   advogados, trecho de 280 caracteres) e `Paginacao`.
-- **Inteiro teor**: `ModalInteiroTeor` exibe `textoHtml`, que já chega **sanitizado**
-  pelo `App\Support\HtmlSanitizer`:
+- **Atalhos de período** (`lib/datas.ts`): Hoje, Ontem, 7 dias, 30 dias, Este mês, Mês
+  passado e Sem datas preenchem as datas (no fuso do navegador) e buscam na hora.
+- **Filtros avançados** (recolhidos; abrem sozinhos se vierem na URL): meio de publicação
+  e nº da comunicação.
+- **Painel lateral** (`PainelComunicacao`, abre ao clicar no número do processo ou em
+  "Ver detalhes"; também no Monitoramento): nº da comunicação na API, tribunal, órgão,
+  tipo, meio, classe (com código), tipo de documento, ID/hash, destinatários com o polo
+  (Ativo/Passivo; outros códigos aparecem como "Polo X"), advogados com OAB, link do
+  documento, botões **Copiar nº (só dígitos)** e **Todas deste processo** (nova consulta
+  pelo número) e o teor em três visões: **Formatado**, **Texto** e **Dados** (JSON), com
+  **Copiar**. O `textoHtml` já chega **sanitizado** pelo `App\Support\HtmlSanitizer`:
     - allowlist de tags de texto e tabela (`p`, `br`, `strong`, `table`, `td`...),
       **sem nenhum atributo**;
     - `script`, `style`, `iframe`, `svg`, `form` etc. são removidos com o conteúdo.

@@ -7,7 +7,7 @@ import CardComunicacao from '@/components/CardComunicacao.vue';
 import SkeletonResultados from '@/components/consulta/SkeletonResultados.vue';
 import EstadoVazio from '@/components/EstadoVazio.vue';
 import FiltroBusca from '@/components/FiltroBusca.vue';
-import ModalInteiroTeor from '@/components/ModalInteiroTeor.vue';
+import PainelComunicacao from '@/components/PainelComunicacao.vue';
 import Paginacao from '@/components/Paginacao.vue';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -143,6 +143,7 @@ const resumo = computed(() =>
             :filtros="filtros"
             :tribunais="tribunais"
             :ufs="ufs"
+            :meios="meios"
             :erros="erros"
             :carregando="carregando"
             @buscar="visitar"
@@ -236,5 +237,5 @@ const resumo = computed(() =>
         </section>
     </div>
 
-    <ModalInteiroTeor v-model:open="modalAberto" :comunicacao="selecionada" />
+    <PainelComunicacao v-model:open="modalAberto" :comunicacao="selecionada" />
 </template>

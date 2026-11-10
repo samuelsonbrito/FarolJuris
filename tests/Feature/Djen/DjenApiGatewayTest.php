@@ -131,3 +131,35 @@ it('o monitoramento grava as comunicações reais e deduplica', function () {
         ->and(Alerta::count())->toBe(8);
     Http::assertSent(fn (Request $req) => queryDe($req)['itensPorPagina'] === '100');
 });
+
+it('envia palavra-chave, meio e nº da comunicação com os nomes da API', function () {
+    Http::fake([API.'/comunicacao*' => Http::response($this->fixture)]);
+
+    app(ComunicacaoGateway::class)->buscar(new FiltroConsulta(
+        tribunal: 'TJAM', nomeParte: 'bradesco', texto: 'alienação fiduciária', meio: 'D', numeroComunicacao: '5645',
+        dataInicio: CarbonImmutable::parse('2026-11-04'), dataFim: CarbonImmutable::parse('2026-11-10'), porPagina: 100,
+    ));
+
+    // Mesmo formato do request real visto no navegador (10/11/2026).
+    Http::assertSent(fn (Request $req) => queryDe($req) === [
+        'nomeParte' => 'bradesco', 'siglaTribunal' => 'TJAM', 'texto' => 'alienação fiduciária',
+        'meio' => 'D', 'numeroComunicacao' => '5645',
+        'dataDisponibilizacaoInicio' => '2026-11-04', 'dataDisponibilizacaoFim' => '2026-11-10',
+        'pagina' => '1', 'itensPorPagina' => '100',
+    ]);
+});
+
+it('lê id, nº da comunicação, meio, classe e polo da resposta real', function () {
+    Http::fake([API.'/comunicacao*' => Http::response($this->fixture)]);
+
+    $c = app(ComunicacaoGateway::class)->buscar(new FiltroConsulta(tribunal: 'TJMG'))->comunicacoes[0];
+
+    expect($c->idCnj)->toBe(900000001)
+        ->and($c->numeroComunicacao)->toBe('1')
+        ->and($c->meio)->toBe('D')
+        ->and($c->meioCompleto)->toBe('Diário de Justiça Eletrônico Nacional')
+        // A API manda "APELAçãO / REMESSA NECESSáRIA": normalizado em maiúsculas.
+        ->and($c->classe)->toBe('APELAÇÃO / REMESSA NECESSÁRIA')
+        ->and($c->codigoClasse)->toBe('1728')
+        ->and($c->destinatarios[0]->polo)->toBe('A');
+});

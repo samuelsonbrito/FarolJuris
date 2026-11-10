@@ -24,7 +24,10 @@ use Illuminate\Support\Str;
     {--uf= : UF da OAB}
     {--processo= : Número do processo (com ou sem máscara) para testar numeroProcesso}
     {--parte= : Nome de parte para testar nomeParte}
-    {--advogado= : Nome de advogado para testar nomeAdvogado}')]
+    {--advogado= : Nome de advogado para testar nomeAdvogado}
+    {--texto= : Palavra-chave para testar texto (busca no teor), junto com o tribunal}
+    {--meio= : D ou E para testar meio, junto com o tribunal}
+    {--comunicacao= : Número da comunicação para testar numeroComunicacao, junto com o tribunal}')]
 #[Description('Confere na API real se os parâmetros de filtro do DJEN funcionam')]
 class VerificarFiltrosDjen extends Command
 {
@@ -91,6 +94,24 @@ class VerificarFiltrosDjen extends Command
             $this->checar('nomeAdvogado', $client, ['nomeAdvogado' => $advogado],
                 fn (array $itens) => self::todos($itens, fn ($i) => collect($i['destinatarioadvogados'] ?? [])
                     ->contains(fn ($v) => self::contem((string) ($v['advogado']['nome'] ?? ''), $advogado)), "há itens sem o advogado \"{$advogado}\""));
+        }
+
+        if ($this->option('texto')) {
+            $texto = (string) $this->option('texto');
+            $this->checar('texto', $client, ['siglaTribunal' => $tribunal, 'texto' => $texto],
+                fn (array $itens) => self::todos($itens, fn ($i) => self::contem(strip_tags(html_entity_decode((string) ($i['texto'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8')), $texto), "há itens sem \"{$texto}\" no teor"));
+        }
+
+        if ($this->option('meio')) {
+            $meio = mb_strtoupper((string) $this->option('meio'));
+            $this->checar('meio', $client, ['siglaTribunal' => $tribunal, 'meio' => $meio],
+                fn (array $itens) => self::todos($itens, fn ($i) => ($i['meio'] ?? null) === $meio, "há itens de outro meio que não {$meio}"));
+        }
+
+        if ($this->option('comunicacao')) {
+            $numero = (string) $this->option('comunicacao');
+            $this->checar('numeroComunicacao', $client, ['siglaTribunal' => $tribunal, 'numeroComunicacao' => $numero],
+                fn (array $itens) => self::todos($itens, fn ($i) => (string) ($i['numeroComunicacao'] ?? '') === $numero, 'há itens com outro número de comunicação'));
         }
 
         $this->newLine();

@@ -30,6 +30,14 @@ final readonly class ComunicacaoData
         public array $advogados,
         public string $textoHtml,
         public ?string $linkDocumento = null,
+        /** Identificador da comunicação na Comunica API (`id`). */
+        public ?int $idCnj = null,
+        public ?string $numeroComunicacao = null,
+        /** `D` (Diário de Justiça Eletrônico Nacional) ou `E` (Plataforma Nacional de Editais). */
+        public ?string $meio = null,
+        public ?string $meioCompleto = null,
+        public ?string $classe = null,
+        public ?string $codigoClasse = null,
     ) {}
 
     /** Texto puro, sem HTML e com espaços normalizados. */

@@ -19,6 +19,9 @@ const vazio: FiltrosConsulta = {
     tribunal: null,
     inicio: null,
     fim: null,
+    texto: null,
+    meio: null,
+    comunicacao: null,
 };
 
 function montar(filtros: Partial<FiltrosConsulta> = {}, extra = {}) {
@@ -193,5 +196,81 @@ describe('FiltroBusca', () => {
         expect(
             wrapper.find('#filtro-processo').attributes('aria-invalid'),
         ).toBe('true');
+    });
+
+    it('envia palavra-chave, meio e nº da comunicação', async () => {
+        const wrapper = montar(
+            { tribunal: 'TJAM' },
+            {
+                meios: {
+                    D: 'Diário de Justiça Eletrônico Nacional',
+                    E: 'Plataforma Nacional de Editais',
+                },
+            },
+        );
+
+        await wrapper.find('#filtro-texto').setValue('  alienação fiduciária ');
+        await wrapper
+            .find('[data-testid="alternar-avancados"]')
+            .trigger('click');
+        await wrapper.find('#filtro-meio').setValue('E');
+        await wrapper.find('#filtro-comunicacao').setValue('56-45');
+        await wrapper.find('form').trigger('submit');
+
+        expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
+            {
+                ...vazio,
+                tribunal: 'TJAM',
+                texto: 'alienação fiduciária',
+                meio: 'E',
+                comunicacao: '5645',
+            },
+        ]);
+    });
+
+    it('abre os filtros avançados quando vieram na URL', () => {
+        const fechado = montar();
+        expect(fechado.find('#filtros-avancados').isVisible()).toBe(false);
+
+        const aberto = montar({ meio: 'D' });
+        expect(aberto.find('#filtros-avancados').isVisible()).toBe(true);
+    });
+
+    it('aplica o atalho de período e busca na hora', async () => {
+        vi.setSystemTime(new Date(2026, 10, 10, 12, 0, 0));
+        const wrapper = montar({ tribunal: 'TJAM' });
+
+        await wrapper.find('[data-testid="atalho-7dias"]').trigger('click');
+
+        expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
+            {
+                ...vazio,
+                tribunal: 'TJAM',
+                inicio: '2026-11-04',
+                fim: '2026-11-10',
+            },
+        ]);
+        expect(
+            wrapper
+                .find('[data-testid="atalho-7dias"]')
+                .attributes('aria-pressed'),
+        ).toBe('true');
+
+        await wrapper.find('[data-testid="atalho-semDatas"]').trigger('click');
+        expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
+            { ...vazio, tribunal: 'TJAM' },
+        ]);
+    });
+
+    it('palavra-chave sozinha já é critério de busca', async () => {
+        const wrapper = montar();
+
+        await wrapper.find('#filtro-texto').setValue('penhora');
+        vi.advanceTimersByTime(500);
+        await flushPromises();
+
+        expect(wrapper.emitted('buscar')).toEqual([
+            [{ ...vazio, texto: 'penhora' }],
+        ]);
     });
 });

@@ -122,12 +122,15 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   entidades HTML) ou HTML (fragmento, documento com `<!DOCTYPE>`/`<?xml?>`/`<style>`);
   destinatários e advogados repetidos; `numero_oab` alfanumérico (`11811N`, `20413-O`);
   advogado placeholder "SISTEMA DE CITAÇÃO E INTIMAÇÃO ELETRÔNICA" (OAB 99999999);
-  `nomeClasse` com caixa quebrada (não exibido).
+  `nomeClasse` com caixa quebrada (normalizado com `mb_strtoupper` e exibido no painel).
 - Parâmetros enviados (`DjenApiGateway::parametros()`): `numeroOab, ufOab, nomeParte,
-  nomeAdvogado, numeroProcesso, siglaTribunal, dataDisponibilizacaoInicio/Fim (Y-m-d),
-  pagina, itensPorPagina`. Só `itensPorPagina` foi visto num request real; os demais vêm do
-  escopo do projeto e da documentação pública, e são **conferidos no servidor** por
+  nomeAdvogado, numeroProcesso, siglaTribunal, texto, meio, numeroComunicacao,
+  dataDisponibilizacaoInicio/Fim (Y-m-d), pagina, itensPorPagina`. **Vistos num request real**
+  (10/11/2026): `siglaTribunal, nomeParte, texto, dataDisponibilizacaoInicio/Fim, itensPorPagina`.
+  Os demais vêm da documentação pública e são **conferidos no servidor** por
   `djen:verificar-filtros` (um nome errado é ignorado pela API, e o comando detecta).
+- `meio`: `D` (Diário de Justiça Eletrônico Nacional) ou `E` (Plataforma Nacional de Editais),
+  `ConsultaRequest::MEIOS`. Certidão em PDF: endpoint ainda não visto, não implementada.
 - Tribunais: lista estática em `config/tribunais.php`, com siglas no formato de
   `siglaTribunal` (não há endpoint confirmado para isso).
 - OAB pode ter letra (`App\Support\Oab`: `^\d{1,8}(-?[A-Z])?$`, normalizada em maiúsculas;
@@ -136,7 +139,8 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 ## Aba Consulta
 
 - Rota pública `GET /consulta` (`consulta.index`, `throttle:djen-consulta`); `/` redireciona para ela.
-- Query string do app: `oab, uf, parte, advogado, processo, tribunal, inicio, fim, pagina`.
+- Query string do app: `oab, uf, parte, advogado, processo, tribunal, texto, meio, comunicacao,
+  inicio, fim, pagina`. Atalhos de período em `lib/datas.ts`; filtros avançados recolhidos.
   `ConsultaRequest` normaliza (OAB via `Oab::normalizar`, só dígitos no processo, UF/tribunal em maiúsculas) e,
   em caso de erro, **não redireciona** (evita loop em link compartilhado): a página
   recebe `errors` e não consulta.
@@ -148,7 +152,8 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 - Inteiro teor: HTML sanitizado no servidor (`App\Support\HtmlSanitizer`, allowlist,
   sem atributos) antes do `v-html`. `linkDocumento` só aceita http(s).
 - Front: `pages/Consulta/Index.vue` (layout `PublicLayout`), componentes `FiltroBusca`,
-  `CardComunicacao`, `ModalInteiroTeor`, `Paginacao`, `EstadoVazio`,
+  `CardComunicacao`, `PainelComunicacao` (Sheet lateral com todos os dados e o teor em
+  Formatado/Texto/Dados), `Paginacao`, `EstadoVazio`,
   `consulta/SkeletonResultados`. UF e tribunal usam `<select>` nativo.
 - `FiltroBusca`: debounce próprio (700 ms) nos campos de texto; selects/datas buscam na
   hora. Toda busca imediata **cancela** o debounce pendente (senão ele atropelava a

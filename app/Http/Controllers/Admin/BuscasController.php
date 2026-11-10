@@ -48,6 +48,7 @@ class BuscasController extends Controller
                     ->orWhere('advogado', 'ilike', $like)
                     ->orWhere('oab', 'ilike', $like)
                     ->orWhere('tribunal', 'ilike', $like)
+                    ->orWhere('texto', 'ilike', $like)
                     ->when($digitos !== '', fn ($d) => $d->orWhere('processo', 'like', "%{$digitos}%")));
             })
             ->latest('id')
@@ -78,6 +79,9 @@ class BuscasController extends Controller
                         'Advogado' => $b->advogado,
                         'Processo' => $b->processo,
                         'Tribunal' => $b->tribunal,
+                        'Teor' => $b->texto,
+                        'Meio' => $b->meio,
+                        'Comunicação' => $b->numero_comunicacao,
                         'De' => $b->data_inicio?->format('d/m/Y'),
                         'Até' => $b->data_fim?->format('d/m/Y'),
                         'Página' => $b->pagina > 1 ? (string) $b->pagina : null,

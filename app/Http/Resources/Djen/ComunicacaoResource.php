@@ -26,13 +26,20 @@ class ComunicacaoResource extends JsonResource
 
         return [
             'hash' => $c->hash,
+            'id' => $c->idCnj,
+            'numeroComunicacao' => $c->numeroComunicacao,
+            'meio' => $c->meio,
+            'meioCompleto' => $c->meioCompleto,
+            'classe' => $c->classe,
+            'codigoClasse' => $c->codigoClasse,
+            'numeroProcessoDigitos' => preg_replace('/\D/', '', $c->numeroProcesso),
             'tribunal' => $c->tribunal,
             'orgaoJulgador' => $c->orgaoJulgador,
             'tipoComunicacao' => $c->tipoComunicacao,
             'tipoDocumento' => $c->tipoDocumento,
             'dataDisponibilizacao' => $c->dataDisponibilizacao->toDateString(),
             'numeroProcesso' => $c->numeroProcessoFormatado(),
-            'destinatarios' => array_map(fn (DestinatarioData $d): array => ['nome' => $d->nome], $c->destinatarios),
+            'destinatarios' => array_map(fn (DestinatarioData $d): array => ['nome' => $d->nome, 'polo' => $d->polo], $c->destinatarios),
             'advogados' => array_map(fn (AdvogadoData $a): array => [
                 'nome' => $a->nome,
                 'numeroOab' => $a->numeroOab,

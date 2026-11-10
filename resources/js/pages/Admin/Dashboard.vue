@@ -142,6 +142,7 @@ const abasTermos = [
     { chave: 'parte', rotulo: 'Parte' },
     { chave: 'advogado', rotulo: 'Advogado' },
     { chave: 'processo', rotulo: 'Processo' },
+    { chave: 'texto', rotulo: 'Teor' },
 ] as const;
 const abaTermos = ref<(typeof abasTermos)[number]['chave']>('oab');
 
