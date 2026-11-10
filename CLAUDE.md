@@ -152,7 +152,9 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 - Inteiro teor: HTML sanitizado no servidor (`App\Support\HtmlSanitizer`, allowlist,
   sem atributos) antes do `v-html`. `linkDocumento` só aceita http(s).
 - Front: `pages/Consulta/Index.vue` (layout `PublicLayout`), componentes `FiltroBusca`,
-  `CardComunicacao`, `PainelComunicacao` (Sheet lateral com todos os dados e o teor em
+  `LinhaComunicacao` (lista compacta: data/tribunal/meio, processo/classe/órgão, tipo colorido
+  via `TipoComunicacaoBadge` + `lib/comunicacao.ts`, ativo × passivo e OABs; o Monitoramento
+  segue com `CardComunicacao`), `PainelComunicacao` (Sheet lateral com todos os dados e o teor em
   Formatado/Texto/Dados), `Paginacao`, `EstadoVazio`,
   `consulta/SkeletonResultados`. UF e tribunal usam `<select>` nativo.
 - `FiltroBusca`: debounce próprio (700 ms) nos campos de texto; selects/datas buscam na

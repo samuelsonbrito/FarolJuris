@@ -46,6 +46,8 @@ Definidos em `resources/js/app.ts`, pelo nome da página:
 | `pages/Erro.vue`                                       | Página de erro 403/404/429/500/503 (renderizada por `bootstrap/app.php`)                    |
 | `components/FiltroBusca.vue`                           | Formulário da Consulta, com debounce de 700 ms e máscara CNJ                                |
 | `components/CardComunicacao.vue`                       | Um resultado; com `selecionavel` + `v-model:selecionada`                                    |
+| `components/LinhaComunicacao.vue`                      | Uma comunicação em linha compacta (lista da Consulta)                                       |
+| `components/TipoComunicacaoBadge.vue`                  | Selo colorido do tipo de comunicação (cores em `lib/comunicacao.ts`)                        |
 | `components/PainelComunicacao.vue`                     | Painel lateral (Sheet) com todos os dados da comunicação e o teor (formatado, texto, dados) |
 | `components/Paginacao.vue`                             | Navegação entre páginas                                                                     |
 | `components/EstadoVazio.vue`                           | "Nenhum resultado" e afins                                                                  |

@@ -1,26 +1,39 @@
 <script setup lang="ts">
 import { Skeleton } from '@/components/ui/skeleton';
 
-withDefaults(defineProps<{ quantidade?: number }>(), { quantidade: 3 });
+withDefaults(defineProps<{ quantidade?: number }>(), { quantidade: 5 });
 </script>
 
 <template>
-    <div class="grid gap-4" aria-busy="true" aria-label="Carregando resultados">
+    <div
+        class="overflow-hidden rounded-xl border bg-card"
+        aria-busy="true"
+        aria-label="Carregando resultados"
+    >
         <div
             v-for="n in quantidade"
             :key="n"
-            class="rounded-xl border p-5"
+            class="grid gap-x-4 gap-y-2 border-b px-4 py-4 last:border-b-0 lg:grid-cols-[7.5rem_minmax(0,1.7fr)_minmax(0,1fr)_minmax(0,1.5fr)_auto]"
             data-testid="skeleton"
         >
-            <div class="flex gap-2">
-                <Skeleton class="h-5 w-14 rounded-full" />
-                <Skeleton class="h-5 w-20 rounded-full" />
-                <Skeleton class="ml-auto h-4 w-20" />
+            <div class="grid gap-2">
+                <Skeleton class="h-4 w-20" />
+                <Skeleton class="h-5 w-16 rounded-full" />
             </div>
-            <Skeleton class="mt-4 h-5 w-64" />
-            <Skeleton class="mt-3 h-4 w-48" />
-            <Skeleton class="mt-2 h-4 w-72" />
-            <Skeleton class="mt-4 h-12 w-full" />
+            <div class="grid gap-2">
+                <Skeleton class="h-4 w-56" />
+                <Skeleton class="h-3 w-48" />
+                <Skeleton class="h-3 w-40" />
+            </div>
+            <div class="grid gap-2">
+                <Skeleton class="h-5 w-28 rounded-md" />
+                <Skeleton class="h-3 w-32" />
+            </div>
+            <div class="grid gap-2">
+                <Skeleton class="h-4 w-64" />
+                <Skeleton class="h-4 w-24" />
+            </div>
+            <Skeleton class="h-8 w-10" />
         </div>
     </div>
 </template>

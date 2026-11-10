@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import { Copy, ExternalLink, FileX, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
+import TipoComunicacaoBadge from '@/components/TipoComunicacaoBadge.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -115,12 +116,7 @@ function copiarTeor() {
                 </SheetDescription>
                 <div class="flex flex-wrap gap-1.5 pt-1">
                     <Badge>{{ comunicacao.tribunal }}</Badge>
-                    <Badge
-                        v-if="comunicacao.tipoComunicacao"
-                        variant="secondary"
-                    >
-                        {{ comunicacao.tipoComunicacao }}
-                    </Badge>
+                    <TipoComunicacaoBadge :tipo="comunicacao.tipoComunicacao" />
                     <Badge v-if="comunicacao.meio" variant="outline">
                         {{ MEIOS_CURTOS[comunicacao.meio] ?? comunicacao.meio }}
                     </Badge>
