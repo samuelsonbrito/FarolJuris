@@ -56,6 +56,7 @@ final class DjenApiGateway implements ComunicacaoGateway
             'texto' => $f->texto,
             'meio' => $f->meio,
             'numeroComunicacao' => $f->numeroComunicacao,
+            'tipoComunicacao' => $f->tipoComunicacao,
             'dataDisponibilizacaoInicio' => $f->dataInicio?->toDateString(),
             'dataDisponibilizacaoFim' => $f->dataFim?->toDateString(),
             'pagina' => $f->pagina,

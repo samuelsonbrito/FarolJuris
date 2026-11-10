@@ -114,3 +114,9 @@ it('registra a palavra-chave, o meio e o nº da comunicação', function () {
     expect(RegistroBusca::sole()->only(['criterio', 'texto', 'meio', 'numero_comunicacao']))
         ->toBe(['criterio' => 'texto', 'texto' => 'alienação fiduciária', 'meio' => 'D', 'numero_comunicacao' => '5645']);
 });
+
+it('registra o tipo de comunicação filtrado', function () {
+    $this->get(route('consulta.index', ['oab' => '12345', 'uf' => 'AM', 'tipo' => 'Intimação']))->assertOk();
+
+    expect(RegistroBusca::sole()->tipo_comunicacao)->toBe('Intimação');
+});

@@ -100,6 +100,10 @@ final class FakeComunicacaoGateway implements ComunicacaoGateway
             return false;
         }
 
+        if ($f->tipoComunicacao !== null && $c->tipoComunicacao !== $f->tipoComunicacao) {
+            return false;
+        }
+
         // Datas de calendário: compara AAAA-MM-DD, sem fuso nem horário.
         $data = $c->dataDisponibilizacao->toDateString();
 
@@ -121,7 +125,9 @@ final class FakeComunicacaoGateway implements ComunicacaoGateway
         $hoje = ($this->hoje ?? CarbonImmutable::today())->startOfDay();
         $tribunais = ['TJAM', 'TJAM', 'TJSP', 'TRF1', 'TRT11', 'STJ'];
         $orgaos = ['1ª Vara Cível', '2ª Vara de Família', 'Juizado Especial Cível', '3ª Turma', 'Vara do Trabalho'];
-        $tipos = ['Intimação', 'Intimação', 'Citação', 'Edital'];
+        // Tipos vistos na API real (ConsultaRequest::TIPOS), com Intimação mais frequente.
+        // 5 tipos para 6 tribunais: o ciclo não se alinha e todo tribunal recebe todos os tipos.
+        $tipos = ['Intimação', 'Lista de distribuição', 'Intimação', 'Edital', 'Pauta de julgamento'];
         $documentos = ['Despacho', 'Decisão', 'Sentença', 'Acórdão'];
         $advogados = [
             new AdvogadoData('Helena Prado Queiroz', '12345', 'AM'),

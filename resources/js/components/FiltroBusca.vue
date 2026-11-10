@@ -23,12 +23,20 @@ const props = withDefaults(
         ufs: string[];
         /** Meios de publicação (código → nome), de ConsultaRequest::MEIOS. */
         meios?: Record<string, string>;
+        /** Tipos de comunicação (ConsultaRequest::TIPOS). */
+        tipos?: string[];
         erros?: Partial<Record<keyof FiltrosConsulta, string>>;
         carregando?: boolean;
         /** Espera (ms) após a digitação antes de buscar. */
         debounce?: number;
     }>(),
-    { meios: () => ({}), erros: () => ({}), carregando: false, debounce: 700 },
+    {
+        meios: () => ({}),
+        tipos: () => [],
+        erros: () => ({}),
+        carregando: false,
+        debounce: 700,
+    },
 );
 
 const emit = defineEmits<{ buscar: [filtros: FiltrosConsulta] }>();
@@ -45,6 +53,7 @@ const form = useForm<Record<keyof FiltrosConsulta, string>>({
     texto: props.filtros.texto ?? '',
     meio: props.filtros.meio ?? '',
     comunicacao: props.filtros.comunicacao ?? '',
+    tipo: props.filtros.tipo ?? '',
 });
 
 /** Os filtros avançados começam abertos quando algum deles veio na URL. */
@@ -70,6 +79,7 @@ function normalizado(): FiltrosConsulta {
         texto: valor(form.texto),
         meio: valor(form.meio),
         comunicacao: valor(somenteDigitos(form.comunicacao)),
+        tipo: valor(form.tipo),
     };
 }
 
@@ -156,6 +166,7 @@ function limpar() {
     form.texto = '';
     form.meio = '';
     form.comunicacao = '';
+    form.tipo = '';
     buscarAgora();
 }
 
@@ -266,7 +277,7 @@ defineExpose({ form });
             </div>
         </div>
 
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="grid gap-1.5">
                 <Label for="filtro-tribunal">Tribunal</Label>
                 <select
@@ -287,6 +298,23 @@ defineExpose({ form });
                     </option>
                 </select>
                 <InputError :message="erros.tribunal" />
+            </div>
+            <div class="grid gap-1.5">
+                <Label for="filtro-tipo">Tipo de comunicação</Label>
+                <select
+                    id="filtro-tipo"
+                    v-model="form.tipo"
+                    name="tipo"
+                    :class="selectClass"
+                    :aria-invalid="Boolean(erros.tipo)"
+                    @change="aoMudarSelecaoOuData"
+                >
+                    <option value="">Todos</option>
+                    <option v-for="t in tipos" :key="t" :value="t">
+                        {{ t }}
+                    </option>
+                </select>
+                <InputError :message="erros.tipo" />
             </div>
             <div class="grid gap-1.5">
                 <Label for="filtro-inicio">Disponibilizada de</Label>

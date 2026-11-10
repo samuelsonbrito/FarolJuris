@@ -31,6 +31,9 @@ function itemFiltrado(array $base, array $q, int $n): array
     if (isset($q['meio'])) {
         $i['meio'] = $q['meio'];
     }
+    if (isset($q['tipoComunicacao'])) {
+        $i['tipoComunicacao'] = $q['tipoComunicacao'];
+    }
     if (isset($q['numeroComunicacao'])) {
         $i['numeroComunicacao'] = (int) $q['numeroComunicacao'];
     }
@@ -115,6 +118,27 @@ it('acusa quando a API ignora a palavra-chave', function () {
     Http::fake(fn () => Http::response(['count' => 3, 'items' => [$this->itens[0], $this->itens[1]]]));
 
     $this->artisan('djen:verificar-filtros', ['--tribunal' => 'TJAM', '--data' => '2026-11-05', '--texto' => 'xyzinexistente'])
+        ->expectsOutputToContain('FALHOU')
+        ->assertFailed();
+});
+
+it('confere o filtro por tipo de comunicação', function () {
+    Http::fake(function (Request $req) {
+        parse_str(parse_url($req->url(), PHP_URL_QUERY), $q);
+
+        return Http::response(['count' => 3, 'items' => array_map(fn ($n) => itemFiltrado($this->itens[0], $q, $n), range(1, 3))]);
+    });
+
+    $this->artisan('djen:verificar-filtros', ['--tribunal' => 'TJAM', '--data' => '2026-11-05', '--tipo' => 'Edital'])
+        ->expectsOutputToContain('tipoComunicacao')
+        ->assertSuccessful();
+});
+
+it('acusa quando a API ignora o tipo de comunicação', function () {
+    Http::fake(fn () => Http::response(['count' => 2, 'items' => [$this->itens[0], $this->itens[1]]]));
+
+    // A fixture tem Intimação e Edital: com o filtro ignorado, os tipos se misturam.
+    $this->artisan('djen:verificar-filtros', ['--tribunal' => 'TJAM', '--data' => '2026-11-05', '--tipo' => 'Edital'])
         ->expectsOutputToContain('FALHOU')
         ->assertFailed();
 });

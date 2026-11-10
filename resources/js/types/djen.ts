@@ -82,6 +82,8 @@ export interface FiltrosConsulta {
     meio: string | null;
     /** Número da comunicação. */
     comunicacao: string | null;
+    /** Tipo de comunicação (Intimação, Edital...). */
+    tipo: string | null;
 }
 
 /** Props da página Consulta/Index. */
@@ -93,4 +95,6 @@ export interface ConsultaPageProps {
     ufs: string[];
     /** ConsultaRequest::MEIOS (código → nome). */
     meios: Record<string, string>;
+    /** ConsultaRequest::TIPOS. */
+    tipos: string[];
 }

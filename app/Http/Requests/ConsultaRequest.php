@@ -26,6 +26,9 @@ class ConsultaRequest extends FormRequest
         'E' => 'Plataforma Nacional de Editais',
     ];
 
+    /** Tipos de comunicação vistos na Comunica API (fixture real e produção). */
+    public const TIPOS = ['Intimação', 'Lista de distribuição', 'Edital', 'Pauta de julgamento'];
+
     private bool $invalido = false;
 
     public function authorize(): bool
@@ -59,7 +62,7 @@ class ConsultaRequest extends FormRequest
     {
         $limpo = [];
 
-        foreach (['oab', 'uf', 'parte', 'advogado', 'processo', 'tribunal', 'inicio', 'fim', 'pagina', 'texto', 'meio', 'comunicacao'] as $campo) {
+        foreach (['oab', 'uf', 'parte', 'advogado', 'processo', 'tribunal', 'inicio', 'fim', 'pagina', 'texto', 'meio', 'comunicacao', 'tipo'] as $campo) {
             $valor = $this->query($campo);
             $limpo[$campo] = is_string($valor) && trim($valor) !== '' ? trim($valor) : null;
         }
@@ -103,6 +106,7 @@ class ConsultaRequest extends FormRequest
             'texto' => ['nullable', 'string', 'min:3', 'max:200'],
             'meio' => ['nullable', Rule::in(array_keys(self::MEIOS))],
             'comunicacao' => ['nullable', 'digits_between:1,12'],
+            'tipo' => ['nullable', Rule::in(self::TIPOS)],
         ];
     }
 
@@ -127,6 +131,7 @@ class ConsultaRequest extends FormRequest
             'texto.max' => 'Palavra-chave muito longa.',
             'meio.in' => 'Meio inválido.',
             'comunicacao.digits_between' => 'Número da comunicação inválido.',
+            'tipo.in' => 'Tipo de comunicação inválido.',
         ];
     }
 
@@ -149,6 +154,7 @@ class ConsultaRequest extends FormRequest
             texto: $v['texto'] ?? null,
             meio: $v['meio'] ?? null,
             numeroComunicacao: $v['comunicacao'] ?? null,
+            tipoComunicacao: $v['tipo'] ?? null,
         );
     }
 }

@@ -82,6 +82,7 @@ class BuscasController extends Controller
                         'Teor' => $b->texto,
                         'Meio' => $b->meio,
                         'Comunicação' => $b->numero_comunicacao,
+                        'Tipo' => $b->tipo_comunicacao,
                         'De' => $b->data_inicio?->format('d/m/Y'),
                         'Até' => $b->data_fim?->format('d/m/Y'),
                         'Página' => $b->pagina > 1 ? (string) $b->pagina : null,
