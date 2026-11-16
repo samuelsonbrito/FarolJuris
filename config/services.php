@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // Google AdSense: o script só é carregado em produção. Vazio desliga.
+    'adsense' => [
+        'client' => env('ADSENSE_CLIENT', 'ca-pub-1687918466354935'),
+    ],
+
 ];

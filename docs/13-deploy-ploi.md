@@ -209,6 +209,15 @@ php artisan djen:verificar-filtros --oab=SUA_OAB --uf=UF --processo=UM_PROCESSO 
 
 Algum **FALHOU**? Ajuste o nome em `DjenApiGateway::parametros()` (branch `fix/...`).
 
+## Google AdSense
+
+- O script do AdSense (`adsbygoogle.js?client=...`) está no `<head>` de `resources/views/app.blade.php` e
+  **só é carregado com `APP_ENV=production`**. O id do editor vem de `ADSENSE_CLIENT` (padrão
+  `ca-pub-1687918466354935`, em `config/services.php`); deixe vazio para desligar.
+- `public/ads.txt` declara o editor (`google.com, pub-1687918466354935, DIRECT, f08c47fec0942fa0`). Se trocar a
+  conta, atualize os dois.
+- Depois do deploy, confira `https://faroljuris.com.br/ads.txt` e peça a verificação do site no painel do AdSense.
+
 ## Equivalência com o VPS sem painel
 
 | Arquivo em `deploy/`                | No Ploi                  |

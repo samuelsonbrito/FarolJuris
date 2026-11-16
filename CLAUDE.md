@@ -268,6 +268,8 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   `composer --no-dev`, build, migrate, `optimize`, `queue:restart`, diagnóstico),
   `nginx/faroljuris.conf` (validado com `nginx -t`), `supervisor/faroljuris-worker.conf`,
   `cron/faroljuris` e `env.production.example`.
+- Google AdSense: script no `<head>` de `app.blade.php` só com `APP_ENV=production` e `ADSENSE_CLIENT`
+  (`config/services.php`, vazio desliga); `public/ads.txt` com o mesmo editor.
 - O app funciona com `php artisan optimize` (sem `env()` fora de `config/`). Health
   check em `/up`.
 

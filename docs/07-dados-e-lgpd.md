@@ -141,3 +141,11 @@ Eloquent. Para arquivos (que não estão no banco), isso não basta. Por isso:
 `tests/Fixtures/djen/comunicacao.json` foi derivada de uma resposta real, com nomes e
 documentos **anonimizados** (chaves e tipos preservados). Toda fixture nova capturada
 com `djen:capturar-fixture` precisa passar pelo mesmo cuidado antes do commit.
+
+### Publicidade (Google AdSense)
+
+Em produção as páginas carregam o script do Google AdSense, que usa cookies e identificadores de
+publicidade do próprio Google (o FarolJuris não envia dados das buscas a ele). A política de privacidade
+do site deve citar o AdSense, e, para anúncios personalizados, é preciso consentimento: o AdSense oferece
+uma mensagem de consentimento própria (Privacidade e mensagens), certificada pelo Google. Desligar:
+`ADSENSE_CLIENT=` vazio. Detalhes em `13-deploy-ploi.md`.
