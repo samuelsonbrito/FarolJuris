@@ -35,6 +35,11 @@
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <meta name="theme-color" content="#0f2a44">
 
+        @if (app()->environment('production') && config('services.adsense.client'))
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ config('services.adsense.client') }}"
+                crossorigin="anonymous"></script>
+        @endif
+
         @routes
         @vite(['resources/css/app.css', 'resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
         <x-inertia::head>
