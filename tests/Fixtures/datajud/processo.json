@@ -1,0 +1,804 @@
+{
+    "took": 48210,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 1,
+            "relation": "eq"
+        },
+        "max_score": 1.0,
+        "hits": [
+            {
+                "_index": "api_publica_tjam",
+                "_id": "TJAM_JE_01234567820268041000",
+                "_score": 1.0,
+                "_source": {
+                    "id": "TJAM_JE_01234567820268041000",
+                    "tribunal": "TJAM",
+                    "grau": "JE",
+                    "numeroProcesso": "01234567820268041000",
+                    "dataAjuizamento": "20250714185327",
+                    "nivelSigilo": 0,
+                    "orgaoJulgador": {
+                        "codigo": 75553,
+                        "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal",
+                        "codigoMunicipioIBGE": 1302603
+                    },
+                    "classe": {
+                        "codigo": 14695,
+                        "nome": "Procedimento do Juizado Especial da Fazenda Pública"
+                    },
+                    "sistema": {
+                        "codigo": 2,
+                        "nome": "Eproc"
+                    },
+                    "formato": {
+                        "codigo": 1,
+                        "nome": "Eletrônico"
+                    },
+                    "dataHoraUltimaAtualizacao": "2026-11-04T01:29:08.366000Z",
+                    "@timestamp": "2026-11-04T01:29:08.366000Z",
+                    "movimentos": [
+                        {
+                            "codigo": 123,
+                            "dataHora": "2025-07-14T18:53:27.000Z",
+                            "nome": "Remessa",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 18,
+                                    "descricao": "motivo_da_remessa",
+                                    "valor": 40,
+                                    "nome": "outros motivos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 26,
+                            "dataHora": "2025-07-14T18:53:27.000Z",
+                            "nome": "Distribuição",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 2,
+                                    "descricao": "tipo_de_distribuicao_redistribuicao",
+                                    "valor": 2,
+                                    "nome": "sorteio"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2025-07-18T10:34:21.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2025-07-18T10:34:27.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2025-08-28T08:09:57.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 107,
+                                    "nome": "Certidão"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2025-08-28T08:09:58.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 51,
+                            "dataHora": "2025-10-10T13:02:40.000Z",
+                            "nome": "Conclusão",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 3,
+                                    "descricao": "tipo_de_conclusao",
+                                    "valor": 36,
+                                    "nome": "para julgamento"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2025-10-13T10:04:31.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2025-10-13T12:37:42.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2025-10-16T22:21:58.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2025-11-13T15:32:12.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1051,
+                            "dataHora": "2025-11-13T17:18:59.000Z",
+                            "nome": "Decurso de Prazo",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1051,
+                            "dataHora": "2025-11-13T18:11:22.000Z",
+                            "nome": "Decurso de Prazo",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2025-12-05T11:36:09.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 107,
+                                    "nome": "Certidão"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2025-12-05T11:36:13.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2025-12-12T10:56:36.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 107,
+                                    "nome": "Certidão"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2025-12-12T10:56:37.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 51,
+                            "dataHora": "2026-01-12T08:19:31.000Z",
+                            "nome": "Conclusão",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 3,
+                                    "descricao": "tipo_de_conclusao",
+                                    "valor": 36,
+                                    "nome": "para julgamento"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-01-18T17:46:37.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2026-02-05T09:49:47.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2026-02-05T09:49:48.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 123,
+                            "dataHora": "2026-02-05T13:00:34.000Z",
+                            "nome": "Remessa",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 18,
+                                    "descricao": "motivo_da_remessa",
+                                    "valor": 37,
+                                    "nome": "em diligência"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-02-18T11:26:38.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-02-18T11:26:59.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-06-19T09:58:21.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 107,
+                                    "nome": "Certidão"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-06-29T18:34:41.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 116,
+                                    "nome": "Informações"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-06-30T11:38:18.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 107,
+                                    "nome": "Certidão"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2026-06-30T11:38:23.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 60,
+                            "dataHora": "2026-06-30T11:38:23.000Z",
+                            "nome": "Expedição de documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-07-03T20:01:40.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 80,
+                                    "nome": "Outros documentos"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1051,
+                            "dataHora": "2026-07-09T00:33:53.000Z",
+                            "nome": "Decurso de Prazo",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 581,
+                            "dataHora": "2026-10-07T10:13:32.000Z",
+                            "nome": "Documento",
+                            "complementosTabelados": [
+                                {
+                                    "codigo": 4,
+                                    "descricao": "tipo_de_documento",
+                                    "valor": 116,
+                                    "nome": "Informações"
+                                }
+                            ],
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-07-14T18:53:27.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 132,
+                            "dataHora": "2025-07-14T18:53:28.000Z",
+                            "nome": "Recebimento",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 12283,
+                            "dataHora": "2025-07-28T01:05:35.000Z",
+                            "nome": "Confirmada",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-08-27T16:47:38.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2025-08-28T23:11:45.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-09-23T13:21:37.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 221,
+                            "dataHora": "2025-10-13T10:04:31.000Z",
+                            "nome": "Procedência em Parte",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2025-10-15T20:41:13.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2025-10-15T20:41:15.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2025-10-15T20:41:15.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-11-27T17:10:16.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-11-27T17:53:04.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 12283,
+                            "dataHora": "2025-12-05T12:16:49.000Z",
+                            "nome": "Confirmada",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-12-11T20:30:48.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 12283,
+                            "dataHora": "2025-12-23T00:56:27.000Z",
+                            "nome": "Confirmada",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 85,
+                            "dataHora": "2025-12-23T18:29:25.000Z",
+                            "nome": "Petição",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2026-01-17T12:37:55.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 196,
+                            "dataHora": "2026-02-05T09:49:47.000Z",
+                            "nome": "Extinção da execução ou do cumprimento da sentença",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2026-02-16T10:25:13.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2026-02-16T10:25:15.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2026-02-16T10:25:15.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 12283,
+                            "dataHora": "2026-06-29T18:25:35.000Z",
+                            "nome": "Confirmada",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 132,
+                            "dataHora": "2026-06-29T18:34:41.000Z",
+                            "nome": "Recebimento",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 12283,
+                            "dataHora": "2026-07-01T11:26:29.000Z",
+                            "nome": "Confirmada",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        },
+                        {
+                            "codigo": 1061,
+                            "dataHora": "2026-07-03T13:55:11.000Z",
+                            "nome": "Disponibilização no Diário da Justiça Eletrônico",
+                            "orgaoJulgador": {
+                                "codigo": "75553",
+                                "nome": "1º Juizado Especial da Fazenda Pública Estadual e Municipal"
+                            }
+                        }
+                    ],
+                    "assuntos": [
+                        {
+                            "codigo": 10671,
+                            "nome": "Obrigação de Fazer / Não Fazer"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

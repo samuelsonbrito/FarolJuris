@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\ConsultaController;
+use App\Http\Controllers\Datajud\AndamentosController;
 use App\Http\Controllers\ExportacaoController;
 use App\Http\Controllers\Monitoramento\AlertaController;
 use App\Http\Controllers\Monitoramento\AlvoController;
@@ -14,6 +15,12 @@ Route::redirect('/', '/consulta')->name('home');
 Route::get('consulta', ConsultaController::class)
     ->middleware('throttle:djen-consulta')
     ->name('consulta.index');
+
+// Andamentos do processo no DataJud (painel da comunicação). Público, como a Consulta.
+Route::get('processos/{numero}/andamentos', AndamentosController::class)
+    ->where('numero', '[0-9]{20}')
+    ->middleware('throttle:datajud')
+    ->name('processos.andamentos');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // O kit chama a página inicial logada de "dashboard"; aqui é o monitoramento.

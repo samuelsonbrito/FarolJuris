@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use App\Notifications\WhatsApp\LogWhatsAppDriver;
 use App\Notifications\WhatsApp\WhatsAppDriver;
+use App\Services\Datajud\DatajudClient;
 use App\Services\Djen\Contracts\ComunicacaoGateway;
 use App\Services\Djen\DjenClient;
 use App\Services\Djen\Gateways\DjenApiGateway;
@@ -34,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
             $app->make(CacheRepository::class),
             $app['config']->get('djen'),
             $app->make('events'),
+        ));
+
+        $this->app->singleton(DatajudClient::class, fn ($app): DatajudClient => new DatajudClient(
+            $app->make(HttpFactory::class),
+            $app->make(CacheRepository::class),
+            $app['config']->get('datajud'),
         ));
 
         $this->app->singleton(ComunicacaoGateway::class, fn ($app): ComunicacaoGateway => match ($app['config']->get('djen.gateway')) {
@@ -82,6 +89,10 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('djen-consulta', fn (Request $request): Limit => Limit::perMinute(
             (int) config('djen.rate_limit.public_per_minute'),
+        )->by($request->ip()));
+
+        RateLimiter::for('datajud', fn (Request $request): Limit => Limit::perMinute(
+            (int) config('datajud.rate_limit_por_minuto'),
         )->by($request->ip()));
     }
 

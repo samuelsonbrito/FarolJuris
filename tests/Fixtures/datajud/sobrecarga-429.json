@@ -1,0 +1,15 @@
+{
+    "error": {
+        "root_cause": [],
+        "type": "search_phase_execution_exception",
+        "reason": "",
+        "phase": "fetch",
+        "grouped": true,
+        "failed_shards": [],
+        "caused_by": {
+            "type": "es_rejected_execution_exception",
+            "reason": "rejected execution of TimedRunnable{original=org.elasticsearch.action.search.FetchSearchPhase$1@14458c75, creationTimeNanos=16843428094426371, startTimeNanos=0, finishTimeNanos=-1, failedOrRejected=false} on TaskExecutionTimeTrackingEsThreadPoolExecutor[name = instance-0000000003/search, queue capacity = 1000, task execution EWMA = 27.8ms, total task execution time = 1456.9d, org.elasticsearch.common.util.concurrent.TaskExecutionTimeTrackingEsThreadPoolExecutor@130ad58d[Running, pool size = 10, active threads = 10, queued tasks = 1002, completed tasks = 2194039480]]"
+        }
+    },
+    "status": 429
+}

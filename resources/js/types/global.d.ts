@@ -23,6 +23,8 @@ declare module '@inertiajs/core' {
             sidebarOpen: boolean;
             /** config('app.cadastro_aberto'): mostra ou esconde "Criar conta". */
             cadastroAberto: boolean;
+            /** Tribunais com andamentos do DataJud no painel (config/datajud.php). */
+            datajudTribunais: string[];
             [key: string]: unknown;
         };
     }

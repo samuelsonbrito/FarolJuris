@@ -3,6 +3,13 @@ import { afterEach, describe, expect, it, vi } from 'vite-plus/test';
 import type { Comunicacao } from '@/types/djen';
 import PainelComunicacao from './PainelComunicacao.vue';
 
+const paginaInertia = { props: { datajudTribunais: [] as string[] } };
+
+vi.mock('@inertiajs/vue3', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@inertiajs/vue3')>()),
+    usePage: () => paginaInertia,
+}));
+
 const comunicacao: Comunicacao = {
     hash: 'rX21azVqRw3hza8SKTyP7DQRAKmGWl',
     id: 776349899,
@@ -121,5 +128,24 @@ describe('PainelComunicacao', () => {
         await flushPromises();
 
         expect(writeText).toHaveBeenCalledWith('03417242220268041000');
+    });
+
+    it('mostra os andamentos só para tribunal com DataJud', async () => {
+        paginaInertia.props.datajudTribunais = [];
+        montar();
+        await flushPromises();
+        expect(achar('[data-testid="andamentos"]')).toBeNull();
+
+        document.body.innerHTML = '';
+        paginaInertia.props.datajudTribunais = ['TJAM'];
+        montar();
+        await flushPromises();
+        expect(achar('[data-testid="andamentos"]')).not.toBeNull();
+
+        document.body.innerHTML = '';
+        montar({ ...comunicacao, tribunal: 'TJSP' });
+        await flushPromises();
+        expect(achar('[data-testid="andamentos"]')).toBeNull();
+        paginaInertia.props.datajudTribunais = [];
     });
 });

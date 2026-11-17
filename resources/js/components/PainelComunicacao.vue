@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { Copy, ExternalLink, FileX, Search } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
+import AndamentosProcesso from '@/components/AndamentosProcesso.vue';
 import TipoComunicacaoBadge from '@/components/TipoComunicacaoBadge.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,20 @@ watch(
     () => props.comunicacao?.hash,
     () => (visao.value = 'formatado'),
 );
+
+const page = usePage();
+
+/** Tribunais com andamentos do DataJud (prop compartilhada `datajudTribunais`). */
+const temAndamentos = computed(() => {
+    const c = props.comunicacao;
+    const tribunais = page.props.datajudTribunais ?? [];
+
+    return (
+        !!c &&
+        c.numeroProcessoDigitos.length === 20 &&
+        tribunais.includes(c.tribunal.toUpperCase())
+    );
+});
 
 const POLOS: Record<string, string> = { A: 'Ativo', P: 'Passivo' };
 
@@ -323,6 +338,12 @@ function copiarTeor() {
                         Sem link do documento no tribunal.
                     </p>
                 </div>
+
+                <AndamentosProcesso
+                    v-if="temAndamentos"
+                    :tribunal="comunicacao.tribunal.toUpperCase()"
+                    :numero-processo="comunicacao.numeroProcessoDigitos"
+                />
 
                 <section aria-labelledby="painel-teor" class="grid gap-3">
                     <div class="flex flex-wrap items-center gap-2">

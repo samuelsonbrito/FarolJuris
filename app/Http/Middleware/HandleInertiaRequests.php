@@ -42,6 +42,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'cadastroAberto' => (bool) config('app.cadastro_aberto'),
+            // Tribunais com andamentos do DataJud no painel da comunicação.
+            'datajudTribunais' => config('datajud.ativo') ? array_keys((array) config('datajud.tribunais')) : [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
