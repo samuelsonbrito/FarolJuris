@@ -8,6 +8,7 @@ use App\Http\Controllers\Monitoramento\AlertaController;
 use App\Http\Controllers\Monitoramento\AlvoController;
 use App\Http\Controllers\Monitoramento\MonitoramentoController;
 use App\Http\Controllers\Monitoramento\PreferenciasController;
+use App\Http\Controllers\ProcessoController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/consulta')->name('home');
@@ -15,6 +16,12 @@ Route::redirect('/', '/consulta')->name('home');
 Route::get('consulta', ConsultaController::class)
     ->middleware('throttle:djen-consulta')
     ->name('consulta.index');
+
+// Página pública do processo (aceita o número com máscara e redireciona para só dígitos).
+Route::get('processos/{numero}', ProcessoController::class)
+    ->where('numero', '[0-9.\-]{20,25}')
+    ->middleware('throttle:djen-consulta')
+    ->name('processos.show');
 
 // Andamentos do processo no DataJud (painel da comunicação). Público, como a Consulta.
 Route::get('processos/{numero}/andamentos', AndamentosController::class)

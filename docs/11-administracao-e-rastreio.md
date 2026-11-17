@@ -81,7 +81,7 @@ grava `origem`, `endpoint`, `parametros`, `status`, `resultado` (`sucesso`, `lim
 tentativas), `itens` e `ratelimit_restante` (cabeçalho `x-ratelimit-remaining`).
 
 A **origem** vem do `Context` do Laravel: `Rastreador::origem('consulta')` é chamado pela
-Consulta, `monitoramento` pelo `MonitorarAlvoJob`, `exportacao` pela exportação e
+Consulta, `processo` pela página do processo, `monitoramento` pelo `MonitorarAlvoJob`, `exportacao` pela exportação e
 `comando` pelos comandos `djen:*`. O `Context` acompanha os jobs na fila.
 
 ### Trilha de atividade (`activity_logs`)

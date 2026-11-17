@@ -121,3 +121,22 @@ páginas selecionadas.
 - `tests/Feature/Consulta/` — validação, normalização, erros do CNJ, `assertInertia`.
 - `resources/js/components/FiltroBusca.test.ts`, `CardComunicacao.test.ts`,
   `Paginacao.test.ts` e `resources/js/lib/cnj.test.ts`.
+
+## Página do processo
+
+`GET /processos/{numero}` (`processos.show`, pública, `throttle:djen-consulta`), aberta pelo botão
+**Página do processo** do painel lateral. Junta num endereço próprio:
+
+- o número com máscara e o tribunal, deduzido do número (`App\Support\NumeroCnj::tribunal()`: J = 8 →
+  TJ pela tabela de TR; J = 4 → TRF; J = 5 → TRT; superiores e demais segmentos ficam sem tribunal);
+- os **andamentos** do DataJud, nos tribunais habilitados (ver [14](14-andamentos-datajud.md));
+- as **publicações no DJEN** (`FiltroConsulta(numeroProcesso)`, paginadas com `?pagina=`), com o mesmo
+  painel lateral da Consulta;
+- **Monitorar este processo** (cria o alvo `processo` do usuário logado; visitante vê "Entre para
+  monitorar"; quem já monitora vê "Monitorado").
+
+O número com máscara (`/processos/0293096-02.2026.8.04.1000`) redireciona (301) para o endereço só com
+dígitos; número sem 20 dígitos dá 404. A busca entra no rastreio com a origem `processo`. A página tem
+`noindex`: ela mostra nomes de partes vindos do DJEN, e indexá-los em buscadores pede uma decisão de LGPD.
+
+![Página do processo](img/pagina-processo.png)

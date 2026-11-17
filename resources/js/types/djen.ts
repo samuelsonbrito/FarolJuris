@@ -100,3 +100,21 @@ export interface ConsultaPageProps {
     /** ConsultaRequest::TIPOS. */
     tipos: string[];
 }
+
+/** App\Http\Controllers\ProcessoController (página do processo) */
+export interface ProcessoPageProps {
+    processo: {
+        /** 20 dígitos. */
+        numero: string;
+        numeroMascara: string;
+        /** Deduzido do número (J.TR); nulo para segmentos não mapeados. */
+        tribunal: string | null;
+        tribunalNome: string | null;
+        /** Tribunal com andamentos do DataJud. */
+        andamentos: boolean;
+    };
+    /** Alvo de monitoramento do usuário logado para este processo. */
+    alvo: { id: number; ativo: boolean } | null;
+    resultados: ResultadoConsulta | null;
+    erro: ErroConsulta | null;
+}

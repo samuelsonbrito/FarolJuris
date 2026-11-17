@@ -21,7 +21,11 @@ import type { Comunicacao } from '@/types/djen';
  * Painel lateral com os detalhes de uma comunicação: dados do processo,
  * partes, advogados e o teor (formatado, texto puro ou dados).
  */
-const props = defineProps<{ comunicacao: Comunicacao | null }>();
+const props = defineProps<{
+    comunicacao: Comunicacao | null;
+    /** Aberto na própria página do processo: sem o atalho para ela nem os andamentos (já estão na página). */
+    naPaginaDoProcesso?: boolean;
+}>();
 
 const aberto = defineModel<boolean>('open', { default: false });
 
@@ -48,6 +52,7 @@ const temAndamentos = computed(() => {
 
     return (
         !!c &&
+        !props.naPaginaDoProcesso &&
         c.numeroProcessoDigitos.length === 20 &&
         tribunais.includes(c.tribunal.toUpperCase())
     );
@@ -163,6 +168,7 @@ function copiarTeor() {
                         </Button>
                         <Button
                             v-if="
+                                !naPaginaDoProcesso &&
                                 comunicacao.numeroProcessoDigitos.length === 20
                             "
                             as-child
@@ -171,16 +177,15 @@ function copiarTeor() {
                         >
                             <Link
                                 :href="
-                                    route('consulta.index', {
-                                        processo:
-                                            comunicacao.numeroProcessoDigitos,
+                                    route('processos.show', {
+                                        numero: comunicacao.numeroProcessoDigitos,
                                     })
                                 "
-                                data-testid="todas-do-processo"
+                                data-testid="pagina-do-processo"
                                 @click="aberto = false"
                             >
                                 <Search class="size-4" aria-hidden="true" />
-                                Todas deste processo
+                                Página do processo
                             </Link>
                         </Button>
                     </div>
