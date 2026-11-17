@@ -38,28 +38,28 @@ Definidos em `resources/js/app.ts`, pelo nome da página:
 
 ## Páginas e componentes do domínio
 
-| Arquivo                                                | Papel                                                                                       |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `pages/Consulta/Index.vue`                             | Busca pública: filtros, resultados, paginação, seleção, modal                               |
-| `pages/Monitoramento/Index.vue`                        | Painel: alvos, alertas (filtro por alvo/status), preferências, LGPD                         |
-| `pages/Exportacao/Index.vue`                           | Lista de exportações, polling enquanto há alguma em andamento                               |
-| `pages/Erro.vue`                                       | Página de erro 403/404/429/500/503 (renderizada por `bootstrap/app.php`)                    |
-| `components/FiltroBusca.vue`                           | Formulário da Consulta, com debounce de 700 ms e máscara CNJ                                |
-| `components/CardComunicacao.vue`                       | Um resultado; com `selecionavel` + `v-model:selecionada`                                    |
-| `components/LinhaComunicacao.vue`                      | Uma comunicação em linha compacta (lista da Consulta)                                       |
-| `components/TipoComunicacaoBadge.vue`                  | Selo colorido do tipo de comunicação (cores em `lib/comunicacao.ts`)                        |
-| `components/PainelComunicacao.vue`                     | Painel lateral (Sheet) com todos os dados da comunicação e o teor (formatado, texto, dados) |
-| `components/Paginacao.vue`                             | Navegação entre páginas                                                                     |
-| `components/EstadoVazio.vue`                           | "Nenhum resultado" e afins                                                                  |
-| `components/BarraExportacao.vue`                       | Contagem selecionada, formato e botão de exportar                                           |
-| `components/consulta/SkeletonResultados.vue`           | Esqueleto durante o carregamento                                                            |
-| `components/monitoramento/FormAlvo.vue`                | Cadastro de alvo (OAB+UF, parte, processo)                                                  |
-| `components/monitoramento/ListaAlvos.vue`              | Alvos com contagens, pausar, verificar agora, excluir                                       |
-| `components/monitoramento/PreferenciasNotificacao.vue` | E-mail, WhatsApp e "excluir todos os meus dados"                                            |
-| `composables/useSelecao.ts`                            | Seleção que sobrevive à paginação (chave → página)                                          |
-| `composables/useExportar.ts`                           | `POST /exportacoes` + toast de erro                                                         |
-| `lib/cnj.ts`                                           | `somenteDigitos`, `mascaraCnj`, `cnjCompleto`, `formatarData`, `normalizarOab`              |
-| `lib/flashToast.ts`                                    | Mostra o `Inertia::flash('toast', ...)` do servidor com `vue-sonner`                        |
+| Arquivo                                                | Papel                                                                                                 |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `pages/Consulta/Index.vue`                             | Busca pública: filtros, resultados, paginação, seleção, modal                                         |
+| `pages/Monitoramento/Index.vue`                        | Painel: alvos, alertas (filtro por alvo/status), preferências, LGPD                                   |
+| `pages/Exportacao/Index.vue`                           | Lista de exportações, polling enquanto há alguma em andamento                                         |
+| `pages/Erro.vue`                                       | Página de erro 403/404/429/500/503 (renderizada por `bootstrap/app.php`)                              |
+| `components/FiltroBusca.vue`                           | Formulário da Consulta: busca só ao enviar (botão ou Enter), aviso de filtros alterados e máscara CNJ |
+| `components/CardComunicacao.vue`                       | Um resultado; com `selecionavel` + `v-model:selecionada`                                              |
+| `components/LinhaComunicacao.vue`                      | Uma comunicação em linha compacta (lista da Consulta)                                                 |
+| `components/TipoComunicacaoBadge.vue`                  | Selo colorido do tipo de comunicação (cores em `lib/comunicacao.ts`)                                  |
+| `components/PainelComunicacao.vue`                     | Painel lateral (Sheet) com todos os dados da comunicação e o teor (formatado, texto, dados)           |
+| `components/Paginacao.vue`                             | Navegação entre páginas                                                                               |
+| `components/EstadoVazio.vue`                           | "Nenhum resultado" e afins                                                                            |
+| `components/BarraExportacao.vue`                       | Contagem selecionada, formato e botão de exportar                                                     |
+| `components/consulta/SkeletonResultados.vue`           | Esqueleto durante o carregamento                                                                      |
+| `components/monitoramento/FormAlvo.vue`                | Cadastro de alvo (OAB+UF, parte, processo)                                                            |
+| `components/monitoramento/ListaAlvos.vue`              | Alvos com contagens, pausar, verificar agora, excluir                                                 |
+| `components/monitoramento/PreferenciasNotificacao.vue` | E-mail, WhatsApp e "excluir todos os meus dados"                                                      |
+| `composables/useSelecao.ts`                            | Seleção que sobrevive à paginação (chave → página)                                                    |
+| `composables/useExportar.ts`                           | `POST /exportacoes` + toast de erro                                                                   |
+| `lib/cnj.ts`                                           | `somenteDigitos`, `mascaraCnj`, `cnjCompleto`, `formatarData`, `normalizarOab`                        |
+| `lib/flashToast.ts`                                    | Mostra o `Inertia::flash('toast', ...)` do servidor com `vue-sonner`                                  |
 
 ## Padrões
 

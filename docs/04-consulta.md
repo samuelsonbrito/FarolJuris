@@ -73,12 +73,12 @@ o tempo de espera (`Retry-After`).
 ## Comportamento da tela
 
 - **Formulário** (`components/FiltroBusca.vue`):
-    - Campos de texto buscam sozinhos após **700 ms** sem digitar (debounce próprio).
-    - Selects (UF, tribunal) e datas buscam na hora.
-    - Toda busca imediata (Enter, botão, paginação) **cancela o debounce pendente**. Sem
-      isso, um debounce atrasado sobrescrevia a navegação para a página 2.
-    - Não dispara busca automática quando ela seria recusada: texto com menos de 3
-      letras, processo incompleto, OAB sem UF (ou o contrário), ou nada preenchido.
+    - **Só busca ao enviar** (botão **Buscar** ou Enter). Digitar, trocar select (UF,
+      tribunal, tipo, meio), data ou atalho de período só muda o formulário: buscar a cada
+      tecla atrapalhava quem ainda estava digitando.
+    - Enquanto o formulário difere dos filtros da URL, aparece "Filtros alterados. Clique em
+      Buscar para atualizar os resultados." (espaços a mais não contam).
+    - **Limpar** zera os campos e volta ao estado inicial (sem critério, não chama o CNJ).
     - O número do processo ganha a máscara CNJ enquanto se digita (`lib/cnj.ts`).
 - **Navegação**: `router.get(..., { preserveState, preserveScroll })`, mantendo os
   filtros na URL.

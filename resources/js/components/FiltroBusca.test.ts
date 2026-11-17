@@ -33,7 +33,6 @@ function montar(filtros: Partial<FiltrosConsulta> = {}, extra = {}) {
                 { sigla: 'TJAM', nome: 'Tribunal de Justiça do Amazonas' },
             ],
             ufs: ['AM', 'SP'],
-            debounce: 500,
             ...extra,
         },
         attachTo: document.body,
@@ -105,69 +104,59 @@ describe('FiltroBusca', () => {
         expect((input.element as HTMLInputElement).value).toBe('1234567-89');
     });
 
-    it('busca automaticamente após o debounce, uma vez só', async () => {
+    it('não busca enquanto digita, só ao clicar em Buscar', async () => {
         const wrapper = montar();
         const input = wrapper.find('#filtro-parte');
 
         await input.setValue('Jo');
-        await input.setValue('Joa');
-        await input.setValue('Joan');
-        vi.advanceTimersByTime(499);
+        await input.setValue('Joana');
+        vi.advanceTimersByTime(5000);
         await flushPromises();
         expect(wrapper.emitted('buscar')).toBeUndefined();
 
-        vi.advanceTimersByTime(1);
-        await flushPromises();
-        expect(wrapper.emitted('buscar')).toEqual([
-            [{ ...vazio, parte: 'Joan' }],
+        await wrapper.find('form').trigger('submit');
+
+        expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
+            { ...vazio, parte: 'Joana' },
         ]);
     });
 
-    it('cancela o debounce pendente quando há uma busca imediata', async () => {
-        const wrapper = montar();
-
-        await wrapper.find('#filtro-oab').setValue('12345'); // agenda debounce
-        await wrapper.find('#filtro-uf').setValue('AM'); // busca imediata
-        vi.advanceTimersByTime(2000);
-        await flushPromises();
-
-        expect(wrapper.emitted('buscar')).toHaveLength(1);
-    });
-
-    it('não repete a busca se os filtros já são os da URL', async () => {
-        const wrapper = montar({ parte: 'Joana' });
-
-        await wrapper.find('#filtro-parte').setValue('Joana ');
-        vi.advanceTimersByTime(600);
-        await flushPromises();
-
-        expect(wrapper.emitted('buscar')).toBeUndefined();
-    });
-
-    it('não busca automaticamente com filtro incompleto', async () => {
-        const wrapper = montar();
-
-        await wrapper.find('#filtro-parte').setValue('Jo'); // menos de 3 letras
-        vi.advanceTimersByTime(600);
-        await wrapper.find('#filtro-parte').setValue('');
-        await wrapper.find('#filtro-oab').setValue('12345'); // OAB sem UF
-        vi.advanceTimersByTime(600);
-        await wrapper.find('#filtro-oab').setValue('');
-        await wrapper.find('#filtro-processo').setValue('12345'); // processo incompleto
-        vi.advanceTimersByTime(600);
-        await flushPromises();
-
-        expect(wrapper.emitted('buscar')).toBeUndefined();
-    });
-
-    it('busca na hora ao trocar select com filtros válidos', async () => {
+    it('não busca ao trocar select, data ou atalho de período', async () => {
+        vi.setSystemTime(new Date(2026, 10, 10, 12, 0, 0));
         const wrapper = montar({ oab: '12345' });
 
         await wrapper.find('#filtro-uf').setValue('AM');
+        await wrapper.find('#filtro-tribunal').setValue('TJAM');
+        await wrapper.find('#filtro-inicio').setValue('2026-11-01');
+        await wrapper.find('[data-testid="atalho-7dias"]').trigger('click');
+        vi.advanceTimersByTime(5000);
+        await flushPromises();
 
-        expect(wrapper.emitted('buscar')).toEqual([
-            [{ ...vazio, oab: '12345', uf: 'AM' }],
-        ]);
+        expect(wrapper.emitted('buscar')).toBeUndefined();
+    });
+
+    it('avisa que os filtros mudaram até a pessoa buscar', async () => {
+        const wrapper = montar({ parte: 'Joana' });
+        expect(wrapper.find('[data-testid="filtros-alterados"]').exists()).toBe(
+            false,
+        );
+
+        // Espaço a mais não conta como mudança.
+        await wrapper.find('#filtro-parte').setValue('Joana ');
+        expect(wrapper.find('[data-testid="filtros-alterados"]').exists()).toBe(
+            false,
+        );
+
+        await wrapper.find('#filtro-parte').setValue('Maria');
+        expect(wrapper.find('[data-testid="filtros-alterados"]').exists()).toBe(
+            true,
+        );
+
+        // A página recebe os novos filtros da URL depois da busca.
+        await wrapper.setProps({ filtros: { ...vazio, parte: 'Maria' } });
+        expect(wrapper.find('[data-testid="filtros-alterados"]').exists()).toBe(
+            false,
+        );
     });
 
     it('limpa todos os campos e busca sem filtros', async () => {
@@ -237,11 +226,13 @@ describe('FiltroBusca', () => {
         expect(aberto.find('#filtros-avancados').isVisible()).toBe(true);
     });
 
-    it('aplica o atalho de período e busca na hora', async () => {
+    it('aplica o atalho de período no formulário e busca ao enviar', async () => {
         vi.setSystemTime(new Date(2026, 10, 10, 12, 0, 0));
         const wrapper = montar({ tribunal: 'TJAM' });
 
         await wrapper.find('[data-testid="atalho-7dias"]').trigger('click');
+        expect(wrapper.emitted('buscar')).toBeUndefined();
+        await wrapper.find('form').trigger('submit');
 
         expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
             {
@@ -258,6 +249,7 @@ describe('FiltroBusca', () => {
         ).toBe('true');
 
         await wrapper.find('[data-testid="atalho-semDatas"]').trigger('click');
+        await wrapper.find('form').trigger('submit');
         expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
             { ...vazio, tribunal: 'TJAM' },
         ]);
@@ -267,15 +259,14 @@ describe('FiltroBusca', () => {
         const wrapper = montar();
 
         await wrapper.find('#filtro-texto').setValue('penhora');
-        vi.advanceTimersByTime(500);
-        await flushPromises();
+        await wrapper.find('form').trigger('submit');
 
         expect(wrapper.emitted('buscar')).toEqual([
             [{ ...vazio, texto: 'penhora' }],
         ]);
     });
 
-    it('filtra por tipo de comunicação na hora', async () => {
+    it('filtra por tipo de comunicação ao enviar', async () => {
         const wrapper = montar(
             { oab: '5055', uf: 'AM' },
             {
@@ -299,6 +290,8 @@ describe('FiltroBusca', () => {
         ]);
 
         await wrapper.find('#filtro-tipo').setValue('Edital');
+        expect(wrapper.emitted('buscar')).toBeUndefined();
+        await wrapper.find('form').trigger('submit');
 
         expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
             { ...vazio, oab: '5055', uf: 'AM', tipo: 'Edital' },
