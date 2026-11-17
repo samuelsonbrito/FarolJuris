@@ -54,6 +54,7 @@ final class MetricasAdmin
 
     public const ROTULOS_ORIGEM_CNJ = [
         'consulta' => 'Consulta',
+        'processo' => 'Página do processo',
         'monitoramento' => 'Monitoramento',
         'exportacao' => 'Exportação',
         'comando' => 'Comandos',

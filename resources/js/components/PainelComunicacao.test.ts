@@ -51,7 +51,7 @@ function montar(c: Comunicacao = comunicacao) {
             },
             mocks: {
                 route: (nome: string, q: Record<string, string>) =>
-                    `/${nome}?processo=${q.processo}`,
+                    `/${nome}?numero=${q.numero}`,
             },
         },
     });
@@ -87,8 +87,8 @@ describe('PainelComunicacao', () => {
         expect(texto).toContain('OAB 30820/RS');
         expect(texto).toContain('Sem link do documento no tribunal.');
         expect(
-            achar('[data-testid="todas-do-processo"]')?.getAttribute('href'),
-        ).toBe('/consulta.index?processo=03417242220268041000');
+            achar('[data-testid="pagina-do-processo"]')?.getAttribute('href'),
+        ).toBe('/processos.show?numero=03417242220268041000');
     });
 
     it('alterna o teor entre formatado, texto e dados', async () => {

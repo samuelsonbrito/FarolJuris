@@ -165,6 +165,14 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   hora. Toda busca imediata **cancela** o debounce pendente (senão ele atropelava a
   paginação), e o debounce não dispara se os filtros já são os da URL.
 
+## Página do processo
+
+- `GET /processos/{numero}` (`processos.show`, `ProcessoController`, página `Processo/Show`, `PublicLayout`):
+  publicações do DJEN do processo (paginadas), `AndamentosProcesso` (se o tribunal tem DataJud) e
+  "Monitorar este processo" (POST `monitoramento.alvos.store`, prop `alvo`). Número com máscara → 301 para
+  só dígitos. Tribunal deduzido do número por `App\Support\NumeroCnj` (J/TR). Rastreio com origem `processo`.
+  `noindex` (nomes de partes). O painel lateral leva até ela ("Página do processo").
+
 ## Andamentos do processo (DataJud)
 
 - API Pública do DataJud (CNJ): `POST https://api-publica.datajud.cnj.jus.br/{indice}/_search`,
