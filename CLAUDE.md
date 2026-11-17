@@ -165,6 +165,17 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   hora. Toda busca imediata **cancela** o debounce pendente (senão ele atropelava a
   paginação), e o debounce não dispara se os filtros já são os da URL.
 
+## Andamentos do processo (DataJud)
+
+- API Pública do DataJud (CNJ): `POST https://api-publica.datajud.cnj.jus.br/{indice}/_search`,
+  `Authorization: APIKey <chave pública>` (`DATAJUD_API_KEY`), query `match numeroProcesso`. Só metadados e
+  movimentos (sem partes/advogados/sigilo), não é em tempo real, lenta (15–50 s) e às vezes 429.
+- `config/datajud.php` (`tribunais`: sigla → índice; começamos só com `TJAM`), `DatajudClient` (único ponto de
+  contato, cache 6 h, `DatajudException::sobrecarga`), DTOs em `app/Data/Datajud/`, rota pública
+  `processos.andamentos` (`throttle:datajud`, JSON), prop compartilhada `datajudTribunais`.
+- Front: `AndamentosProcesso` no `PainelComunicacao`, sob demanda (botão), tipos em `types/datajud.ts`.
+  Fixtures reais em `tests/Fixtures/datajud/`. Detalhes: `docs/14-andamentos-datajud.md`.
+
 ## Aba Monitoramento
 
 - Rotas `auth`+`verified` em `/monitoramento` (`monitoramento.*`); `dashboard` e o

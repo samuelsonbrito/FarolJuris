@@ -22,6 +22,7 @@ vai mexer no código.
 | Ver uso, buscas e rastreio (área interna)    | [11 · Administração e rastreio](11-administracao-e-rastreio.md) |
 | Usar a marca, a logo e as cores              | [12 · Identidade visual](12-identidade-visual.md)               |
 | Publicar no Ploi (VPS Hostinger)             | [13 · Deploy no Ploi](13-deploy-ploi.md)                        |
+| Andamentos do processo (DataJud/CNJ)         | [14 · Andamentos (DataJud)](14-andamentos-datajud.md)           |
 
 ## O sistema em um parágrafo
 
