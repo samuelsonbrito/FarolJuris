@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import { ChevronDown, Search, SlidersHorizontal, X } from '@lucide/vue';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, ref } from 'vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    cnjCompleto,
-    mascaraCnj,
-    normalizarOab,
-    somenteDigitos,
-} from '@/lib/cnj';
+import { mascaraCnj, normalizarOab, somenteDigitos } from '@/lib/cnj';
 import type { AtalhoData } from '@/lib/datas';
 import { ATALHOS_DATA, atalhoAtivo, intervaloDoAtalho } from '@/lib/datas';
 import type { FiltrosConsulta, Tribunal } from '@/types/djen';
@@ -27,15 +22,12 @@ const props = withDefaults(
         tipos?: string[];
         erros?: Partial<Record<keyof FiltrosConsulta, string>>;
         carregando?: boolean;
-        /** Espera (ms) após a digitação antes de buscar. */
-        debounce?: number;
     }>(),
     {
         meios: () => ({}),
         tipos: () => [],
         erros: () => ({}),
         carregando: false,
-        debounce: 700,
     },
 );
 
@@ -83,32 +75,11 @@ function normalizado(): FiltrosConsulta {
     };
 }
 
-/** Evita bater no CNJ com filtros que certamente seriam recusados. */
-const prontoParaBuscaAutomatica = computed(() => {
-    const f = normalizado();
-    const temCriterio = Boolean(
-        f.oab || f.parte || f.advogado || f.processo || f.tribunal || f.texto,
-    );
-    const textoCurto = [f.parte, f.advogado, f.texto].some(
-        (v) => v !== null && v.length < 3,
-    );
-    const processoIncompleto = f.processo !== null && !cnjCompleto(f.processo);
-    const oabSemUf = Boolean(f.oab) !== Boolean(f.uf);
-
-    return temCriterio && !textoCurto && !processoIncompleto && !oabSemUf;
-});
-
-let timer: ReturnType<typeof setTimeout> | undefined;
-
-function cancelarDebounce() {
-    clearTimeout(timer);
-    timer = undefined;
-}
-
+/**
+ * A busca só acontece ao enviar o formulário (botão Buscar ou Enter). Digitar,
+ * trocar um select, uma data ou um atalho de período só muda o formulário.
+ */
 function buscarAgora() {
-    // Uma busca imediata invalida qualquer busca com debounce pendente; sem
-    // isso, o debounce disparava depois e atropelava a navegação (ex.: página 2).
-    cancelarDebounce();
     emit('buscar', normalizado());
 }
 
@@ -121,28 +92,11 @@ function igualAosFiltrosAtuais(): boolean {
     );
 }
 
-function buscarComDebounce() {
-    cancelarDebounce();
-    timer = setTimeout(() => {
-        timer = undefined;
-
-        if (prontoParaBuscaAutomatica.value && !igualAosFiltrosAtuais()) {
-            buscarAgora();
-        }
-    }, props.debounce);
-}
-
-onBeforeUnmount(cancelarDebounce);
+/** Há mudança no formulário que ainda não foi buscada. */
+const alterado = computed(() => !igualAosFiltrosAtuais());
 
 function aoDigitarProcesso(valor: string | number) {
     form.processo = mascaraCnj(String(valor));
-    buscarComDebounce();
-}
-
-function aoMudarSelecaoOuData() {
-    if (prontoParaBuscaAutomatica.value) {
-        buscarAgora();
-    }
 }
 
 const atalho = computed(() => atalhoAtivo(form.inicio, form.fim));
@@ -151,7 +105,6 @@ function aplicarAtalho(chave: AtalhoData) {
     const { inicio, fim } = intervaloDoAtalho(chave);
     form.inicio = inicio ?? '';
     form.fim = fim ?? '';
-    aoMudarSelecaoOuData();
 }
 
 function limpar() {
@@ -191,7 +144,6 @@ defineExpose({ form });
                     autocomplete="off"
                     placeholder="Ex.: 12345 ou 12345-A"
                     :aria-invalid="Boolean(erros.oab)"
-                    @update:model-value="buscarComDebounce"
                 />
                 <InputError :message="erros.oab" />
             </div>
@@ -203,7 +155,6 @@ defineExpose({ form });
                     name="uf"
                     :class="selectClass"
                     :aria-invalid="Boolean(erros.uf)"
-                    @change="aoMudarSelecaoOuData"
                 >
                     <option value="">—</option>
                     <option v-for="uf in ufs" :key="uf" :value="uf">
@@ -239,7 +190,6 @@ defineExpose({ form });
                     autocomplete="off"
                     placeholder="Pessoa ou empresa"
                     :aria-invalid="Boolean(erros.parte)"
-                    @update:model-value="buscarComDebounce"
                 />
                 <InputError :message="erros.parte" />
             </div>
@@ -251,7 +201,6 @@ defineExpose({ form });
                     name="advogado"
                     autocomplete="off"
                     :aria-invalid="Boolean(erros.advogado)"
-                    @update:model-value="buscarComDebounce"
                 />
                 <InputError :message="erros.advogado" />
             </div>
@@ -265,7 +214,6 @@ defineExpose({ form });
                     placeholder="Ex.: alienação fiduciária"
                     aria-describedby="filtro-texto-ajuda"
                     :aria-invalid="Boolean(erros.texto)"
-                    @update:model-value="buscarComDebounce"
                 />
                 <p
                     id="filtro-texto-ajuda"
@@ -286,7 +234,6 @@ defineExpose({ form });
                     name="tribunal"
                     :class="selectClass"
                     :aria-invalid="Boolean(erros.tribunal)"
-                    @change="aoMudarSelecaoOuData"
                 >
                     <option value="">Todos</option>
                     <option
@@ -307,7 +254,6 @@ defineExpose({ form });
                     name="tipo"
                     :class="selectClass"
                     :aria-invalid="Boolean(erros.tipo)"
-                    @change="aoMudarSelecaoOuData"
                 >
                     <option value="">Todos</option>
                     <option v-for="t in tipos" :key="t" :value="t">
@@ -324,7 +270,6 @@ defineExpose({ form });
                     name="inicio"
                     type="date"
                     :aria-invalid="Boolean(erros.inicio)"
-                    @change="aoMudarSelecaoOuData"
                 />
                 <InputError :message="erros.inicio" />
             </div>
@@ -337,7 +282,6 @@ defineExpose({ form });
                     type="date"
                     :min="form.inicio || undefined"
                     :aria-invalid="Boolean(erros.fim)"
-                    @change="aoMudarSelecaoOuData"
                 />
                 <InputError :message="erros.fim" />
             </div>
@@ -397,7 +341,6 @@ defineExpose({ form });
                         name="meio"
                         :class="selectClass"
                         :aria-invalid="Boolean(erros.meio)"
-                        @change="aoMudarSelecaoOuData"
                     >
                         <option value="">Todos</option>
                         <option
@@ -419,7 +362,6 @@ defineExpose({ form });
                         inputmode="numeric"
                         autocomplete="off"
                         :aria-invalid="Boolean(erros.comunicacao)"
-                        @update:model-value="buscarComDebounce"
                     />
                     <InputError :message="erros.comunicacao" />
                 </div>
@@ -427,6 +369,15 @@ defineExpose({ form });
         </div>
 
         <div class="flex flex-wrap items-center justify-end gap-2">
+            <p
+                v-if="alterado"
+                class="mr-auto text-xs text-muted-foreground"
+                role="status"
+                data-testid="filtros-alterados"
+            >
+                Filtros alterados. Clique em Buscar para atualizar os
+                resultados.
+            </p>
             <Button
                 type="button"
                 variant="ghost"

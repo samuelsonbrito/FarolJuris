@@ -161,9 +161,9 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   segue com `CardComunicacao`), `PainelComunicacao` (Sheet lateral com todos os dados e o teor em
   Formatado/Texto/Dados), `Paginacao`, `EstadoVazio`,
   `consulta/SkeletonResultados`. UF e tribunal usam `<select>` nativo.
-- `FiltroBusca`: debounce próprio (700 ms) nos campos de texto; selects/datas buscam na
-  hora. Toda busca imediata **cancela** o debounce pendente (senão ele atropelava a
-  paginação), e o debounce não dispara se os filtros já são os da URL.
+- `FiltroBusca`: **só busca ao enviar** (botão Buscar ou Enter); digitar, selects, datas e atalhos só
+  mudam o formulário (pedido de usabilidade: buscar a cada tecla atrapalhava). Aviso "Filtros alterados"
+  enquanto o formulário difere da URL.
 
 ## Página do processo
 
