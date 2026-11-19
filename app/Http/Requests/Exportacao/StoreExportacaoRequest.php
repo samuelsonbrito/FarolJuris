@@ -47,7 +47,7 @@ class StoreExportacaoRequest extends FormRequest
                 'filtros.parte' => ['nullable', 'string', 'min:3', 'max:120'],
                 'filtros.advogado' => ['nullable', 'string', 'min:3', 'max:120'],
                 'filtros.processo' => ['nullable', 'digits:20'],
-                'filtros.tribunal' => ['nullable', 'string', 'max:20', 'regex:/^[A-Z0-9]+$/'],
+                'filtros.tribunal' => ['nullable', 'string', 'max:20', 'regex:/^[A-Z0-9]+(-[A-Z]{2})?$/'],
                 'filtros.inicio' => ['nullable', 'date_format:Y-m-d'],
                 'filtros.fim' => ['nullable', 'date_format:Y-m-d'],
                 'filtros.texto' => ['nullable', 'string', 'min:3', 'max:200'],

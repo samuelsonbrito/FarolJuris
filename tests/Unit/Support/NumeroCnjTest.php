@@ -20,6 +20,9 @@ it('deduz o tribunal de J e TR', function (string $numero, ?string $sigla) {
     'TJSP' => ['00000000020268260000', 'TJSP'],
     'TRF1' => ['00000000020264010000', 'TRF1'],
     'TRT11' => ['00000000020265110000', 'TRT11'],
+    'TRE-AM' => ['00000000020266040000', 'TRE-AM'],
+    'TRE-DF' => ['00000000020266070000', 'TRE-DF'],
+    'TJMSP' => ['00000000020269260000', 'TJMSP'],
     'STJ (J = 3) não mapeado' => ['00000000020263000000', null],
     'TR estadual inexistente' => ['00000000020268990000', null],
 ]);

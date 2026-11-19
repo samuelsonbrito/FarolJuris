@@ -30,7 +30,11 @@ function montar(filtros: Partial<FiltrosConsulta> = {}, extra = {}) {
         props: {
             filtros: { ...vazio, ...filtros },
             tribunais: [
-                { sigla: 'TJAM', nome: 'Tribunal de Justiça do Amazonas' },
+                {
+                    sigla: 'TJAM',
+                    nome: 'Tribunal de Justiça do Amazonas',
+                    categoria: 'Justiça Estadual',
+                },
             ],
             ufs: ['AM', 'SP'],
             ...extra,
@@ -296,5 +300,45 @@ describe('FiltroBusca', () => {
         expect(wrapper.emitted('buscar')?.at(-1)).toEqual([
             { ...vazio, oab: '5055', uf: 'AM', tipo: 'Edital' },
         ]);
+    });
+
+    it('agrupa os tribunais por categoria', () => {
+        const wrapper = montar(
+            {},
+            {
+                tribunais: [
+                    {
+                        sigla: 'STJ',
+                        nome: 'STJ',
+                        categoria: 'Tribunais superiores',
+                    },
+                    {
+                        sigla: 'TJAM',
+                        nome: 'TJAM',
+                        categoria: 'Justiça Estadual',
+                    },
+                    {
+                        sigla: 'TJSP',
+                        nome: 'TJSP',
+                        categoria: 'Justiça Estadual',
+                    },
+                    {
+                        sigla: 'TRE-AM',
+                        nome: 'TRE-AM',
+                        categoria: 'Justiça Eleitoral',
+                    },
+                ],
+            },
+        );
+
+        const grupos = wrapper.findAll('#filtro-tribunal optgroup');
+        expect(grupos.map((g) => g.attributes('label'))).toEqual([
+            'Tribunais superiores',
+            'Justiça Estadual',
+            'Justiça Eleitoral',
+        ]);
+        expect(
+            grupos[1]!.findAll('option').map((o) => o.attributes('value')),
+        ).toEqual(['TJAM', 'TJSP']);
     });
 });

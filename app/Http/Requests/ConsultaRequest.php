@@ -99,7 +99,8 @@ class ConsultaRequest extends FormRequest
             'parte' => ['nullable', 'string', 'min:3', 'max:120'],
             'advogado' => ['nullable', 'string', 'min:3', 'max:120'],
             'processo' => ['nullable', 'digits:20'],
-            'tribunal' => ['nullable', 'string', 'max:20', 'regex:/^[A-Z0-9]+$/'],
+            // Siglas como TJAM, TRT11 ou TRE-SP (TREs com hífen, como a API escreve).
+            'tribunal' => ['nullable', 'string', 'max:20', 'regex:/^[A-Z0-9]+(-[A-Z]{2})?$/'],
             'inicio' => ['nullable', 'date_format:Y-m-d'],
             'fim' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:inicio'],
             'pagina' => ['nullable', 'integer', 'min:1', 'max:500'],

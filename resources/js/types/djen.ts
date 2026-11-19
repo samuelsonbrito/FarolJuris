@@ -61,6 +61,8 @@ export interface ResultadoConsulta {
 export interface Tribunal {
     sigla: string;
     nome: string;
+    /** Rótulo da categoria (App\Support\CategoriaTribunal), para agrupar o filtro. */
+    categoria: string;
 }
 
 /** ConsultaController::erro() */

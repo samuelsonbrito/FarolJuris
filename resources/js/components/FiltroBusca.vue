@@ -48,6 +48,25 @@ const form = useForm<Record<keyof FiltrosConsulta, string>>({
     tipo: props.filtros.tipo ?? '',
 });
 
+/** Tribunais agrupados por categoria, na ordem em que vieram do servidor. */
+const gruposDeTribunais = computed(() => {
+    const grupos: { categoria: string; tribunais: Tribunal[] }[] = [];
+
+    for (const t of props.tribunais) {
+        const categoria = t.categoria ?? 'Outros';
+        let grupo = grupos.find((g) => g.categoria === categoria);
+
+        if (!grupo) {
+            grupo = { categoria, tribunais: [] };
+            grupos.push(grupo);
+        }
+
+        grupo.tribunais.push(t);
+    }
+
+    return grupos;
+});
+
 /** Os filtros avançados começam abertos quando algum deles veio na URL. */
 const avancadosAbertos = ref(
     Boolean(props.filtros.meio || props.filtros.comunicacao),
@@ -236,13 +255,19 @@ defineExpose({ form });
                     :aria-invalid="Boolean(erros.tribunal)"
                 >
                     <option value="">Todos</option>
-                    <option
-                        v-for="t in tribunais"
-                        :key="t.sigla"
-                        :value="t.sigla"
+                    <optgroup
+                        v-for="g in gruposDeTribunais"
+                        :key="g.categoria"
+                        :label="g.categoria"
                     >
-                        {{ t.sigla }} — {{ t.nome }}
-                    </option>
+                        <option
+                            v-for="t in g.tribunais"
+                            :key="t.sigla"
+                            :value="t.sigla"
+                        >
+                            {{ t.sigla }} — {{ t.nome }}
+                        </option>
+                    </optgroup>
                 </select>
                 <InputError :message="erros.tribunal" />
             </div>
