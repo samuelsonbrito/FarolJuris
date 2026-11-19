@@ -32,7 +32,7 @@ it('é pública e mostra o estado inicial sem chamar o gateway', function () {
             ->where('resultados', null)
             ->where('erro', null)
             ->has('tribunais', 5)
-            ->where('tribunais.0', ['sigla' => 'TJAM', 'nome' => 'Tribunal de Justiça do Amazonas'])
+            ->where('tribunais.0', ['sigla' => 'TJAM', 'nome' => 'Tribunal de Justiça do Amazonas', 'categoria' => 'Justiça Estadual'])
             ->has('ufs', 27)
             ->where('filtros.oab', null));
 });
@@ -218,4 +218,17 @@ it('filtra por tipo de comunicação e oferece os tipos conhecidos', function ()
 it('recusa tipo de comunicação desconhecido', function () {
     $this->get(route('consulta.index', ['tribunal' => 'TJAM', 'tipo' => 'Qualquer']))
         ->assertInertia(fn (Assert $page) => $page->has('errors.tipo')->where('resultados', null));
+});
+
+it('aceita a sigla de TRE com hífen, como a API escreve', function () {
+    $gateway = Mockery::mock(ComunicacaoGateway::class);
+    $gateway->shouldReceive('tribunais')->andReturn([]);
+    $gateway->shouldReceive('buscar')->once()
+        ->withArgs(fn (FiltroConsulta $f) => $f->tribunal === 'TRE-AM')
+        ->andReturn(new ResultadoConsulta([], 0, 1, 10));
+    $this->app->instance(ComunicacaoGateway::class, $gateway);
+
+    $this->get(route('consulta.index', ['tribunal' => 'tre-am']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->where('errors', [])->where('filtros.tribunal', 'TRE-AM'));
 });

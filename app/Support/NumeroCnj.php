@@ -37,7 +37,7 @@ final class NumeroCnj
 
     /**
      * Sigla do tribunal (formato de `siglaTribunal`, como em config/tribunais.php), deduzida
-     * de J e TR. Nula para segmentos que não mapeamos (superiores, militar, eleitoral).
+     * de J e TR. Nula para segmentos que não mapeamos (tribunais superiores e Justiça Militar da União).
      */
     public static function tribunal(string $digitos): ?string
     {
@@ -46,6 +46,9 @@ final class NumeroCnj
 
         $sigla = match ($j) {
             '8' => self::TJS[$tr] ?? null,
+            // TREs usam a mesma tabela de TR dos TJs (07 = DF).
+            '6' => isset(self::TJS[$tr]) ? 'TRE-'.($tr === '07' ? 'DF' : substr(self::TJS[$tr], 2)) : null,
+            '9' => ['13' => 'TJMMG', '21' => 'TJMRS', '26' => 'TJMSP'][$tr] ?? null,
             '4' => 'TRF'.(int) $tr,
             '5' => 'TRT'.(int) $tr,
             default => null,

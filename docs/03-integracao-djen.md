@@ -175,7 +175,14 @@ Definidos em `AppServiceProvider::configureRateLimiting()`:
 | `Tests\Support\GatewayEmMemoria` | (testes)       | Simula comunicações que aparecem entre execuções do monitoramento.      |
 
 A lista de tribunais (`tribunais()`) vem de `config/tribunais.php`: não há endpoint
-confirmado na API para isso. As siglas seguem o formato de `siglaTribunal`.
+confirmado na API para isso. As siglas seguem o formato de `siglaTribunal` e a lista vem em
+categorias (`App\Support\CategoriaTribunal`, mostradas em grupos no filtro): tribunais superiores
+(STJ, TST, TSE, STM), Justiça Estadual (27 TJs, TJDFT), Federal (TRF1–6), do Trabalho (TRT1–24),
+Eleitoral (27 TREs), Militar Estadual (TJMMG, TJMRS, TJMSP) e conselhos e sistemas (CNJ, CJF, SEEU).
+
+Verificado em produção (19/11/2026): `TSE` e `CNJ` filtram (14 e 136 publicações); os TREs aparecem
+**com hífen** (`TRE-BA`, `TRE-PA`, `TRE-PE`, `TRE-PR`); uma sigla desconhecida (`ZZZZ`, `STF`,
+`TRESP`) faz a API falhar, e o STF não publica no DJEN.
 
 ## Ferramentas de linha de comando
 

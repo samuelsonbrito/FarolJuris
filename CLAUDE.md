@@ -136,7 +136,9 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 - `meio`: `D` (Diário de Justiça Eletrônico Nacional) ou `E` (Plataforma Nacional de Editais),
   `ConsultaRequest::MEIOS`. Certidão em PDF: endpoint ainda não visto, não implementada.
 - Tribunais: lista estática em `config/tribunais.php`, com siglas no formato de
-  `siglaTribunal` (não há endpoint confirmado para isso).
+  `siglaTribunal` (não há endpoint confirmado para isso), em categorias (`App\Support\CategoriaTribunal`,
+  `<optgroup>` no filtro). TREs com hífen (`TRE-SP`, visto em produção); `TSE` e `CNJ` confirmados; sigla
+  desconhecida faz a API falhar; o STF não publica no DJEN. `NumeroCnj` também deduz TRE (J=6) e TJM (J=9).
 - OAB pode ter letra (`App\Support\Oab`: `^\d{1,8}(-?[A-Z])?$`, normalizada em maiúsculas;
   no front, `normalizarOab`).
 

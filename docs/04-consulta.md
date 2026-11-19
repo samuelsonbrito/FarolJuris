@@ -21,7 +21,7 @@ A URL é a fonte da verdade: qualquer busca pode ser compartilhada por link.
 | `parte`       | 3 a 120 caracteres                                                  | apara espaços                                     |
 | `advogado`    | 3 a 120 caracteres                                                  | apara espaços                                     |
 | `processo`    | exatamente 20 dígitos                                               | remove tudo que não é dígito (aceita a máscara)   |
-| `tribunal`    | `[A-Z0-9]+`, até 20                                                 | maiúsculas                                        |
+| `tribunal`    | `[A-Z0-9]+` (ou `TRE-UF`), até 20                                   | maiúsculas                                        |
 | `inicio`      | `AAAA-MM-DD`                                                        | —                                                 |
 | `fim`         | `AAAA-MM-DD`, `>= inicio`                                           | —                                                 |
 | `texto`       | 3 a 200 caracteres (palavra-chave no teor)                          | apara espaços                                     |
@@ -128,7 +128,7 @@ páginas selecionadas.
 **Página do processo** do painel lateral. Junta num endereço próprio:
 
 - o número com máscara e o tribunal, deduzido do número (`App\Support\NumeroCnj::tribunal()`: J = 8 →
-  TJ pela tabela de TR; J = 4 → TRF; J = 5 → TRT; superiores e demais segmentos ficam sem tribunal);
+  TJ pela tabela de TR; J = 6 → TRE; J = 4 → TRF; J = 5 → TRT; J = 9 → TJM; superiores ficam sem tribunal);
 - os **andamentos** do DataJud, nos tribunais habilitados (ver [14](14-andamentos-datajud.md));
 - as **publicações no DJEN** (`FiltroConsulta(numeroProcesso)`, paginadas com `?pagina=`), com o mesmo
   painel lateral da Consulta;
