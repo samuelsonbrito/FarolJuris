@@ -152,7 +152,9 @@ defineExpose({ form });
         aria-label="Filtros da consulta"
         @submit.prevent="buscarAgora"
     >
-        <div class="grid gap-4 md:grid-cols-[1fr_6rem_1fr]">
+        <div
+            class="grid grid-cols-[minmax(0,1fr)_6rem] gap-4 md:grid-cols-[11rem_6rem_minmax(0,1fr)]"
+        >
             <div class="grid gap-1.5">
                 <Label for="filtro-oab">Número da OAB</Label>
                 <Input
@@ -182,6 +184,20 @@ defineExpose({ form });
                 </select>
                 <InputError :message="erros.uf" />
             </div>
+            <div class="col-span-2 grid gap-1.5 md:col-span-1">
+                <Label for="filtro-advogado">Nome do advogado</Label>
+                <Input
+                    id="filtro-advogado"
+                    v-model="form.advogado"
+                    name="advogado"
+                    autocomplete="off"
+                    :aria-invalid="Boolean(erros.advogado)"
+                />
+                <InputError :message="erros.advogado" />
+            </div>
+        </div>
+
+        <div class="grid items-start gap-4 md:grid-cols-3">
             <div class="grid gap-1.5">
                 <Label for="filtro-processo">Número do processo</Label>
                 <Input
@@ -197,9 +213,6 @@ defineExpose({ form });
                 />
                 <InputError :message="erros.processo" />
             </div>
-        </div>
-
-        <div class="grid gap-4 md:grid-cols-3">
             <div class="grid gap-1.5">
                 <Label for="filtro-parte">Nome da parte</Label>
                 <Input
@@ -211,17 +224,6 @@ defineExpose({ form });
                     :aria-invalid="Boolean(erros.parte)"
                 />
                 <InputError :message="erros.parte" />
-            </div>
-            <div class="grid gap-1.5">
-                <Label for="filtro-advogado">Nome do advogado</Label>
-                <Input
-                    id="filtro-advogado"
-                    v-model="form.advogado"
-                    name="advogado"
-                    autocomplete="off"
-                    :aria-invalid="Boolean(erros.advogado)"
-                />
-                <InputError :message="erros.advogado" />
             </div>
             <div class="grid gap-1.5">
                 <Label for="filtro-texto">Palavra-chave no teor</Label>
