@@ -9,6 +9,7 @@ use App\Http\Controllers\Monitoramento\AlvoController;
 use App\Http\Controllers\Monitoramento\MonitoramentoController;
 use App\Http\Controllers\Monitoramento\PreferenciasController;
 use App\Http\Controllers\ProcessoController;
+use App\Http\Controllers\RaioX\RaioXController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/consulta')->name('home');
@@ -50,6 +51,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('dados', [PreferenciasController::class, 'excluirDados'])->name('dados.destroy');
     });
 
+    // Raio-X de desempenho: o usuário pede pela OAB; o admin gera, confere e libera.
+    Route::prefix('raio-x')->name('raiox.')->controller(RaioXController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:5,1')->name('store');
+        Route::get('{relatorio}', 'show')->name('show');
+        Route::put('{relatorio}/custo', 'custo')->name('custo');
+        Route::get('{relatorio}/planilha', 'planilha')->name('planilha');
+        Route::get('{relatorio}/pdf', 'pdf')->name('pdf');
+    });
+
     Route::prefix('exportacoes')->name('exportacoes.')->controller(ExportacaoController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->middleware('throttle:10,1')->name('store');
@@ -65,6 +76,16 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->name('adm
     Route::get('atividade', Admin\AtividadeController::class)->name('atividade');
     Route::get('usuarios', Admin\UsuariosController::class)->name('usuarios');
     Route::get('cnj', Admin\ChamadasCnjController::class)->name('cnj');
+
+    Route::prefix('raio-x')->name('raiox.')->controller(Admin\RaioXController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::post('{relatorio}/gerar', 'gerar')->name('gerar');
+        Route::get('{relatorio}/conferencia', 'conferencia')->name('conferencia');
+        Route::patch('processos/{processo}', 'conferir')->name('conferir');
+        Route::post('{relatorio}/liberar', 'liberar')->name('liberar');
+        Route::delete('{relatorio}', 'destroy')->name('destroy');
+    });
 });
 
 require __DIR__.'/settings.php';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { FileDown, Radar, Search, ShieldCheck } from '@lucide/vue';
+import { FileDown, Radar, ScanSearch, Search, ShieldCheck } from '@lucide/vue';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -34,6 +34,11 @@ const itensBase: NavItem[] = [
         title: 'Exportações',
         href: route('exportacoes.index'),
         icon: FileDown,
+    },
+    {
+        title: 'Raio-X',
+        href: route('raiox.index'),
+        icon: ScanSearch,
     },
 ];
 

@@ -23,6 +23,7 @@ vai mexer no código.
 | Usar a marca, a logo e as cores              | [12 · Identidade visual](12-identidade-visual.md)               |
 | Publicar no Ploi (VPS Hostinger)             | [13 · Deploy no Ploi](13-deploy-ploi.md)                        |
 | Andamentos do processo (DataJud/CNJ)         | [14 · Andamentos (DataJud)](14-andamentos-datajud.md)           |
+| Raio-X de desempenho (IA)                    | [15 · Raio-X](15-raio-x.md)                                     |
 
 ## O sistema em um parágrafo
 

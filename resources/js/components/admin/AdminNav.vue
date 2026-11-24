@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Activity, LayoutDashboard, Search, Server, Users } from '@lucide/vue';
+import {
+    Activity,
+    LayoutDashboard,
+    ScanSearch,
+    Search,
+    Server,
+    Users,
+} from '@lucide/vue';
 
 /** Abas da área administrativa. O período atual acompanha a navegação. */
 const props = defineProps<{ query?: Record<string, string> }>();
@@ -30,6 +37,12 @@ const abas = [
         titulo: 'API do CNJ',
         icone: Server,
         comPeriodo: true,
+    },
+    {
+        rota: 'admin.raiox.index',
+        titulo: 'Raio-X',
+        icone: ScanSearch,
+        comPeriodo: false,
     },
 ];
 

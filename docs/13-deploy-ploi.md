@@ -134,6 +134,10 @@ DJEN_GATEWAY=api
 DJEN_BASE_URL=https://comunicaapi.pje.jus.br/api/v1
 DJEN_MONITORING_TIME=07:00
 DJEN_MONITORING_TIMEZONE=America/Manaus
+
+# Raio-X: classificação das decisões por IA (chave em console.anthropic.com)
+ANTHROPIC_API_KEY=
+RAIOX_IA_DRIVER=claude
 ```
 
 - **E-mail**: sem SMTP ninguém confirma o cadastro e os alertas não saem. Pode ser o e-mail
