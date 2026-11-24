@@ -17,6 +17,7 @@ use App\Services\RaioX\ClassificadorRegras;
 use App\Services\RaioX\ClaudeModelo;
 use App\Services\RaioX\Contracts\ClassificadorDecisoes;
 use App\Services\RaioX\Contracts\ModeloLinguagem;
+use App\Services\RaioX\ProgressoRaioX;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -52,6 +53,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Raio-X: classificação das decisões (Claude pela API da Anthropic, ou regras fixas sem custo).
         $this->app->bind(ModeloLinguagem::class, fn ($app): ModeloLinguagem => new ClaudeModelo((array) $app['config']->get('raiox.ia')));
+        // Uma instância por requisição: as médias do histórico são lidas uma vez por lista.
+        $this->app->scoped(ProgressoRaioX::class);
         $this->app->bind(ClassificadorDecisoes::class, fn ($app): ClassificadorDecisoes => match ($app['config']->get('raiox.ia.driver')) {
             'fake' => new ClassificadorRegras,
             default => new ClassificadorIA($app->make(ModeloLinguagem::class)),

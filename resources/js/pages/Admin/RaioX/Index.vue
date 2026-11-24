@@ -11,6 +11,7 @@ import {
 } from '@lucide/vue';
 import { computed, watch } from 'vue';
 import AdminNav from '@/components/admin/AdminNav.vue';
+import BarraProgresso from '@/components/raiox/BarraProgresso.vue';
 import EstadoVazio from '@/components/EstadoVazio.vue';
 import InputError from '@/components/InputError.vue';
 import Paginacao from '@/components/Paginacao.vue';
@@ -19,7 +20,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatarData, normalizarOab } from '@/lib/cnj';
-import type { RelatorioRaioX } from '@/types/raiox';
+import { duracao } from '@/lib/raiox';
+import type { RelatorioRaioX, TemposRaioX } from '@/types/raiox';
 
 defineOptions({
     layout: {
@@ -36,6 +38,7 @@ const props = defineProps<{
     ufs: string[];
     iaDriver: string;
     iaConfigurada: boolean;
+    tempos: TemposRaioX;
 }>();
 
 // Atualiza a lista enquanto algum Raio-X está em processamento.
@@ -122,6 +125,29 @@ const selectClass =
         >
             Modo de demonstração (RAIOX_IA_DRIVER=fake): a classificação usa
             regras simples e dados de exemplo, sem IA.
+        </p>
+
+        <p
+            class="rounded-lg border p-3 text-sm text-muted-foreground"
+            data-testid="tempo-medio"
+        >
+            <template v-if="tempos.amostras > 0">
+                Tempo médio de processamento:
+                <strong class="text-foreground">{{
+                    duracao(tempos.mediaTotal)
+                }}</strong>
+                (coleta {{ duracao(tempos.mediaColeta) }} + leitura das decisões
+                {{ duracao(tempos.mediaClassificacao) }}), nos últimos
+                {{ tempos.amostras }} Raio-X. Ritmo:
+                {{ tempos.porPagina.toFixed(1) }} s por página de publicações e
+                {{ tempos.porProcesso.toFixed(1) }} s por processo.
+            </template>
+            <template v-else>
+                Ainda sem Raio-X concluído para medir o tempo médio. Estimativa
+                inicial: ~3,5 s por página de 100 publicações e ~5 s por
+                processo com decisão (uma OAB com 1.700 publicações e 100
+                processos decididos leva cerca de 10 minutos).
+            </template>
         </p>
 
         <form
@@ -232,11 +258,24 @@ const selectClass =
                             >
                                 {{ r.statusRotulo }}
                             </Badge>
+                            <BarraProgresso
+                                v-if="r.progresso"
+                                class="mt-2"
+                                :progresso="r.progresso"
+                            />
                             <p
-                                v-if="r.etapa"
+                                v-else-if="r.etapa"
                                 class="mt-1 text-xs text-muted-foreground"
                             >
                                 {{ r.etapa }}
+                            </p>
+                            <p
+                                v-if="
+                                    r.duracaoSegundos !== null && !r.progresso
+                                "
+                                class="mt-1 text-xs text-muted-foreground"
+                            >
+                                Processado em {{ duracao(r.duracaoSegundos) }}
                             </p>
                             <p
                                 v-if="r.erro"

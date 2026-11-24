@@ -19,6 +19,7 @@ use App\Models\RaioX\RelatorioRaioX;
 use App\Models\User;
 use App\Notifications\RaioX\RaioXLiberado;
 use App\Services\RaioX\GeradorRaioX;
+use App\Services\RaioX\ProgressoRaioX;
 use App\Services\Rastreio\Rastreador;
 use App\Support\CapitaisUf;
 use App\Support\Rastreio\TipoEvento;
@@ -30,7 +31,7 @@ use Inertia\Response;
 /** Admin: pedidos de Raio-X, geração (custo de IA), conferência dos ambíguos e liberação. */
 class RaioXController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, ProgressoRaioX $progresso): Response
     {
         $relatorios = RelatorioRaioX::query()->with('user')->latest()->paginate(30);
 
@@ -40,6 +41,7 @@ class RaioXController extends Controller
             'ufs' => ConsultaRequest::UFS,
             'iaDriver' => (string) config('raiox.ia.driver'),
             'iaConfigurada' => config('raiox.ia.driver') === 'fake' || filled(config('raiox.ia.api_key')),
+            'tempos' => fn () => array_intersect_key($progresso->ritmo(), array_flip(['amostras', 'mediaTotal', 'mediaColeta', 'mediaClassificacao', 'porPagina', 'porProcesso'])),
         ]);
     }
 

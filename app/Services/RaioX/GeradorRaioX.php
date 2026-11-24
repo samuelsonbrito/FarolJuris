@@ -50,6 +50,12 @@ final class GeradorRaioX
                 'ia_tokens_saida' => 0,
                 'erro' => null,
                 'gerado_em' => null,
+                'iniciado_em' => now(),
+                'coleta_concluida_em' => null,
+                'paginas_total' => 0,
+                'paginas_coletadas' => 0,
+                'classificar_total' => 0,
+                'classificados' => 0,
                 'liberado_em' => null,
                 'liberado_por' => null,
                 'ia_modelo' => $this->classificador->modelo(),
@@ -84,6 +90,8 @@ final class GeradorRaioX
 
             $relatorio->update([
                 'publicacoes_total' => $relatorio->publicacoes()->count(),
+                'paginas_coletadas' => $pagina,
+                'paginas_total' => max($pagina, min($maxPaginas, $resultado->ultimaPagina())),
                 'etapa' => "Coletando publicações no DJEN (página {$pagina} de ".min($maxPaginas, $resultado->ultimaPagina()).')',
             ]);
 
@@ -161,6 +169,9 @@ final class GeradorRaioX
 
         $relatorio->update([
             'processos_total' => $porProcesso->count(),
+            'coleta_concluida_em' => now(),
+            'classificar_total' => count($candidatos),
+            'classificados' => 0,
             'etapa' => $candidatos === [] ? null : 'Classificando '.count($candidatos).' processos com decisão',
         ]);
 
@@ -215,6 +226,7 @@ final class GeradorRaioX
         RelatorioRaioX::query()->whereKey($relatorio->id)->update([
             'ia_tokens_entrada' => DB::raw('ia_tokens_entrada + '.$classificacao->tokensEntrada),
             'ia_tokens_saida' => DB::raw('ia_tokens_saida + '.$classificacao->tokensSaida),
+            'classificados' => DB::raw('classificados + 1'),
         ]);
     }
 

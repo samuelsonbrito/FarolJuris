@@ -89,3 +89,22 @@ export const ROTULOS_STATUS: Record<string, string> = {
     liberado: 'Disponível',
     falhou: 'Falhou',
 };
+
+/** Segundos → "45 s", "3 min", "1 h 05 min". */
+export function duracao(segundos: number | null | undefined): string {
+    if (segundos === null || segundos === undefined) {
+        return '—';
+    }
+
+    if (segundos < 60) {
+        return `${Math.max(1, Math.round(segundos))} s`;
+    }
+
+    const minutos = Math.round(segundos / 60);
+
+    if (minutos < 60) {
+        return `${minutos} min`;
+    }
+
+    return `${Math.floor(minutos / 60)} h ${String(minutos % 60).padStart(2, '0')} min`;
+}
