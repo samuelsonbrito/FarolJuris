@@ -189,7 +189,8 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 ## Raio-X de desempenho
 
 - Menu `/raio-x` (`raiox.*`, auth): o usuário pede pela OAB; o admin (`/admin/raio-x`, `admin.raiox.*`) gera,
-  confere os ambíguos e libera (e-mails `RaioXSolicitado`/`RaioXLiberado`). Status em `StatusRaioX`.
+  confere os ambíguos e libera. E-mails `RaioXSolicitado`/`RaioXLiberado` pela fila, **desligados por padrão**
+  (`RAIOX_AVISOS_EMAIL=false`: o SMTP de produção ainda não está configurado). Status em `StatusRaioX`.
 - Tabelas `raiox_relatorios`, `raiox_publicacoes`, `raiox_processos` (cascata com a conta). `GeradorRaioX`:
   `ColetarRaioXJob` (15 páginas por tarefa, reencadeia; abaixo do retry_after de 90 s) → `montar` →
   `Bus::batch` de `ClassificarProcessoRaioXJob` → `concluir`. Só processos com decisão (`DetectorDecisao`) vão para a IA.

@@ -8,6 +8,8 @@ use App\Notifications\RaioX\RaioXSolicitado;
 use App\Services\Djen\Contracts\ComunicacaoGateway;
 use App\Services\Djen\Gateways\FakeComunicacaoGateway;
 use Carbon\CarbonImmutable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -40,8 +42,9 @@ it('lista só os relatórios da própria conta', function () {
         ->assertInertia(fn (Assert $page) => $page->component('RaioX/Index')->has('relatorios', 1)->has('ufs', 27));
 });
 
-it('o usuário pede um Raio-X e os admins são avisados', function () {
+it('o usuário pede um Raio-X e, com os avisos ligados, os admins recebem e-mail', function () {
     Notification::fake();
+    config(['raiox.avisos_email' => true]);
 
     $this->actingAs($this->user)->post(route('raiox.store'), ['oab' => ' 54.321 ', 'uf' => 'am'])->assertRedirect();
 
@@ -128,6 +131,7 @@ it('o admin cria um Raio-X para uma conta pelo e-mail', function () {
 
 it('o admin gera, confere e libera; o dono é avisado', function () {
     Notification::fake();
+    config(['raiox.avisos_email' => true]);
     config(['queue.default' => 'sync']);
     $r = relatorioDe($this->user, 'solicitado');
 
@@ -173,4 +177,30 @@ it('não gera de novo um Raio-X que está em processamento', function () {
 
     $this->actingAs($this->admin)->post(route('admin.raiox.gerar', $r))->assertSessionHasErrors('relatorio');
     Queue::assertNothingPushed();
+});
+
+it('com os avisos desligados (padrão), nenhum e-mail sai no pedido nem na liberação', function () {
+    Notification::fake();
+    $r = relatorioDe($this->user, 'pronto');
+
+    $this->actingAs($this->user)->post(route('raiox.store'), ['oab' => '11111', 'uf' => 'AM'])->assertSessionHasNoErrors();
+    $this->actingAs($this->admin)->post(route('admin.raiox.liberar', $r))->assertSessionHasNoErrors();
+
+    expect($r->fresh()->status)->toBe(StatusRaioX::Liberado);
+    Notification::assertNothingSent();
+});
+
+it('os avisos do Raio-X vão pela fila: falha de e-mail não derruba o pedido', function () {
+    Queue::fake();
+    config(['raiox.avisos_email' => true]);
+
+    $this->actingAs($this->user)->post(route('raiox.store'), ['oab' => '54321', 'uf' => 'AM'])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+
+    expect($this->user->relatoriosRaioX()->count())->toBe(1)
+        ->and(new RaioXSolicitado($this->user->relatoriosRaioX()->first()))->toBeInstanceOf(ShouldQueue::class)
+        ->and(new RaioXLiberado($this->user->relatoriosRaioX()->first()))->toBeInstanceOf(ShouldQueue::class);
+
+    Queue::assertPushed(SendQueuedNotifications::class);
 });

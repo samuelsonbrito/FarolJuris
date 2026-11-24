@@ -135,7 +135,10 @@ class RaioXController extends Controller
             'liberado_por' => $request->user()->id,
         ]);
 
-        $relatorio->user->notify(new RaioXLiberado($relatorio));
+        if (config('raiox.avisos_email')) {
+            $relatorio->user->notify(new RaioXLiberado($relatorio));
+        }
+
         $rastreador->evento(TipoEvento::RAIOX_LIBERADO, ['relatorio_id' => $relatorio->id], $request->user(), $request);
         Inertia::flash('toast', ['type' => 'success', 'message' => "Raio-X liberado para {$relatorio->user->name}."]);
 
