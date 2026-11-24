@@ -198,6 +198,8 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   `Contracts\ModeloLinguagem` → `ClaudeModelo` (SDK `anthropic-ai/sdk`, `claude-opus-5-5`, esforço baixo, saída
   estruturada, prompt de sistema com cache). Recusa/erro/JSON inválido/confiança baixa → conferência humana.
   Testes usam o driver `fake` (phpunit.xml) e um `ModeloLinguagem` falso; nunca chamam a API.
+- Progresso: tempos/contadores por etapa em `raiox_relatorios` (`iniciado_em`, `coleta_concluida_em`, páginas, classificados);
+  `ProgressoRaioX` estima % e tempo restante pelo ritmo dos últimos Raio-X (barra `raiox/BarraProgresso`, polling de 4 s).
 - `MetricasRaioX`: taxa = (êxito + parcial) ÷ decididos (sem conferência); custo por êxito. Planilha `PlanilhaRaioX`,
   PDF `exports/raiox.blade.php`. Detalhes: `docs/15-raio-x.md`.
 

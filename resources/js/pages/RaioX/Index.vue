@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePoll } from '@inertiajs/vue3';
 import { ScanSearch, Send } from '@lucide/vue';
+import { computed, watch } from 'vue';
 import EstadoVazio from '@/components/EstadoVazio.vue';
+import BarraProgresso from '@/components/raiox/BarraProgresso.vue';
 import InputError from '@/components/InputError.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +16,22 @@ defineOptions({
     layout: { breadcrumbs: [{ title: 'Raio-X', href: '/raio-x' }] },
 });
 
-defineProps<{ relatorios: RelatorioRaioX[]; ufs: string[]; meses: number }>();
+const props = defineProps<{
+    relatorios: RelatorioRaioX[];
+    ufs: string[];
+    meses: number;
+}>();
+
+// Atualiza o progresso enquanto algum Raio-X está em processamento.
+const emAndamento = computed(() =>
+    props.relatorios.some((r) => r.status === 'processando'),
+);
+const { start, stop } = usePoll(
+    4000,
+    { only: ['relatorios'] },
+    { autoStart: false },
+);
+watch(emAndamento, (v) => (v ? start() : stop()), { immediate: true });
 
 const form = useForm({ oab: '', uf: '' });
 
@@ -158,6 +175,11 @@ const selectClass =
                             Ver Raio-X
                         </Link>
                     </Button>
+                    <BarraProgresso
+                        v-else-if="r.progresso"
+                        class="w-full sm:ml-auto sm:w-80"
+                        :progresso="r.progresso"
+                    />
                     <p v-else class="ml-auto text-xs text-muted-foreground">
                         Aparece aqui quando estiver pronto.
                     </p>

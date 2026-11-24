@@ -51,6 +51,18 @@ liberar (com aviso de prévia). Gerar de novo apaga a coleta e a classificação
 - **Conferência**: vão para a fila do admin os casos com `confianca` baixa, polo do cliente indefinido numa
   decisão, recusa da IA, resposta inválida ou erro da API. Até serem conferidos, ficam fora das taxas.
 
+## Progresso e tempo de processamento (`ProgressoRaioX`)
+
+- Cada geração grava `iniciado_em`, `coleta_concluida_em` e `gerado_em`, além de `paginas_total`/`paginas_coletadas`
+  e `classificar_total`/`classificados` (atualizados a cada página e a cada processo lido).
+- O ritmo é medido nos últimos 20 Raio-X concluídos: segundos por página coletada, segundos por processo classificado
+  (já com os workers em paralelo) e fração de publicações que viram processos a classificar. Sem histórico, valores
+  iniciais: 3,5 s/página, 5 s/processo e 6%.
+- Enquanto processa, o resource traz `progresso {etapa, percentual (1–99), paginas, paginasTotal, classificados,
+  classificarTotal, decorridoSegundos, restanteSegundos}`; as telas do usuário e do admin mostram a barra
+  (`components/raiox/BarraProgresso.vue`) e se atualizam a cada 4 s. O admin vê o tempo médio dos Raio-X gerados e,
+  em cada relatório concluído, quanto ele levou (`duracaoSegundos`).
+
 ## Métricas (`MetricasRaioX`)
 
 - Cada processo conta uma vez, pela decisão mais recente do período, lida do lado do cliente.

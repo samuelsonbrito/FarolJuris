@@ -34,6 +34,10 @@ export interface RelatorioRaioX {
     solicitadoEm: string;
     geradoEm: string | null;
     liberadoEm: string | null;
+    /** App\Services\RaioX\ProgressoRaioX::de() — só enquanto processa. */
+    progresso: ProgressoRaioX | null;
+    /** Tempo total do último processamento. */
+    duracaoSegundos: number | null;
     /** Só para o admin. */
     usuario?: { id: number; nome: string; email: string };
     pendentes?: number;
@@ -122,4 +126,26 @@ export interface MetricasRaioX {
 export interface Opcao {
     valor: string;
     rotulo: string;
+}
+
+export interface ProgressoRaioX {
+    etapa: 'coleta' | 'classificacao';
+    /** 1–99 enquanto processa. */
+    percentual: number;
+    paginas: number;
+    paginasTotal: number;
+    classificados: number;
+    classificarTotal: number;
+    decorridoSegundos: number | null;
+    restanteSegundos: number | null;
+}
+
+/** Médias dos Raio-X já gerados (Admin\RaioXController::index). */
+export interface TemposRaioX {
+    amostras: number;
+    mediaTotal: number | null;
+    mediaColeta: number | null;
+    mediaClassificacao: number | null;
+    porPagina: number;
+    porProcesso: number;
 }

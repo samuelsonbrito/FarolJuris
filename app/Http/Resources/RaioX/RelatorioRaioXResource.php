@@ -3,6 +3,7 @@
 namespace App\Http\Resources\RaioX;
 
 use App\Models\RaioX\RelatorioRaioX;
+use App\Services\RaioX\ProgressoRaioX;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -38,6 +39,9 @@ class RelatorioRaioXResource extends JsonResource
             'solicitadoEm' => $r->created_at->toIso8601String(),
             'geradoEm' => $r->gerado_em?->toIso8601String(),
             'liberadoEm' => $r->liberado_em?->toIso8601String(),
+            // Barra de progresso enquanto processa (nulo nos demais status).
+            'progresso' => app(ProgressoRaioX::class)->de($r),
+            'duracaoSegundos' => $r->iniciado_em && $r->gerado_em ? (int) $r->iniciado_em->diffInSeconds($r->gerado_em) : null,
             'usuario' => $this->when($admin, fn () => ['id' => $r->user->id, 'nome' => $r->user->name, 'email' => $r->user->email]),
             'pendentes' => $this->when($admin, fn () => $r->processos()->where('precisa_conferencia', true)->count()),
             'erro' => $this->when($admin, fn () => $r->erro),

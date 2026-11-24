@@ -28,6 +28,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $ia_tokens_entrada
  * @property int $ia_tokens_saida
  * @property string|null $erro
+ * @property CarbonInterface|null $iniciado_em
+ * @property CarbonInterface|null $coleta_concluida_em
+ * @property int $paginas_total
+ * @property int $paginas_coletadas
+ * @property int $classificar_total
+ * @property int $classificados
  * @property CarbonInterface|null $gerado_em
  * @property CarbonInterface|null $liberado_em
  * @property int|null $liberado_por
@@ -41,10 +47,11 @@ class RelatorioRaioX extends Model
     protected $fillable = [
         'oab', 'uf', 'nome_advogado', 'inicio', 'fim', 'status', 'etapa', 'publicacoes_total', 'processos_total',
         'custo_mensal', 'custo_variavel', 'honorario_medio', 'ia_modelo', 'ia_tokens_entrada', 'ia_tokens_saida',
-        'erro', 'gerado_em', 'liberado_em', 'liberado_por',
+        'erro', 'gerado_em', 'liberado_em', 'liberado_por', 'iniciado_em', 'coleta_concluida_em',
+        'paginas_total', 'paginas_coletadas', 'classificar_total', 'classificados',
     ];
 
-    protected $attributes = ['status' => 'solicitado', 'publicacoes_total' => 0, 'processos_total' => 0, 'ia_tokens_entrada' => 0, 'ia_tokens_saida' => 0];
+    protected $attributes = ['status' => 'solicitado', 'publicacoes_total' => 0, 'processos_total' => 0, 'ia_tokens_entrada' => 0, 'ia_tokens_saida' => 0, 'paginas_total' => 0, 'paginas_coletadas' => 0, 'classificar_total' => 0, 'classificados' => 0];
 
     protected function casts(): array
     {
@@ -53,6 +60,8 @@ class RelatorioRaioX extends Model
             'inicio' => 'date',
             'fim' => 'date',
             'gerado_em' => 'datetime',
+            'iniciado_em' => 'datetime',
+            'coleta_concluida_em' => 'datetime',
             'liberado_em' => 'datetime',
         ];
     }
