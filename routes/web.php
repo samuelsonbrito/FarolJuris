@@ -76,6 +76,7 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->name('adm
     Route::get('atividade', Admin\AtividadeController::class)->name('atividade');
     Route::get('usuarios', Admin\UsuariosController::class)->name('usuarios');
     Route::get('cnj', Admin\ChamadasCnjController::class)->name('cnj');
+    Route::get('custos-ia', Admin\CustosIAController::class)->name('custos-ia');
 
     Route::prefix('raio-x')->name('raiox.')->controller(Admin\RaioXController::class)->group(function () {
         Route::get('/', 'index')->name('index');

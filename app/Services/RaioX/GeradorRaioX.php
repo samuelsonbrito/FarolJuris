@@ -15,6 +15,7 @@ use App\Models\RaioX\ProcessoRaioX;
 use App\Models\RaioX\PublicacaoRaioX;
 use App\Models\RaioX\RelatorioRaioX;
 use App\Services\Djen\Contracts\ComunicacaoGateway;
+use App\Services\IA\CustoIA;
 use App\Services\RaioX\Contracts\ClassificadorDecisoes;
 use App\Support\CapitaisUf;
 use App\Support\Oab;
@@ -33,6 +34,7 @@ final class GeradorRaioX
     public function __construct(
         private readonly ComunicacaoGateway $gateway,
         private readonly ClassificadorDecisoes $classificador,
+        private readonly CustoIA $custos,
     ) {}
 
     /** Recomeça do zero (apaga coleta e classificação anteriores) e põe a coleta na fila. */
@@ -222,6 +224,11 @@ final class GeradorRaioX
         ));
 
         $this->aplicar($processo, $classificacao, $publicacoes);
+
+        // Custo da chamada (tokens, dólar e real) para o painel de custos de IA.
+        if ($classificacao->uso !== null) {
+            $this->custos->registrar($classificacao->uso, $relatorio->id);
+        }
 
         RelatorioRaioX::query()->whereKey($relatorio->id)->update([
             'ia_tokens_entrada' => DB::raw('ia_tokens_entrada + '.$classificacao->tokensEntrada),

@@ -5,6 +5,7 @@ namespace App\Services\RaioX;
 use Anthropic\Core\Exceptions\AnthropicException;
 use App\Data\RaioX\ClassificacaoData;
 use App\Data\RaioX\ContextoProcesso;
+use App\Data\RaioX\UsoIA;
 use App\Enums\RaioX\Confianca;
 use App\Enums\RaioX\GrupoOrigem;
 use App\Enums\RaioX\InstanciaDecisao;
@@ -76,21 +77,29 @@ final class ClassificadorIA implements ClassificadorDecisoes
         } catch (AnthropicException $e) {
             report($e);
 
-            return ClassificacaoData::falha('Falha ao consultar a IA: '.class_basename($e).'. Confira manualmente.');
+            return ClassificacaoData::falha('Falha ao consultar a IA: '.class_basename($e).'. Confira manualmente.')
+                ->comUso(new UsoIA($this->modelo->nome(), resultado: 'erro'));
         }
 
+        $uso = new UsoIA(
+            $this->modelo->nome(), $resposta->tokensEntrada, $resposta->tokensCacheLeitura,
+            $resposta->tokensCacheEscrita, $resposta->tokensSaida, $resposta->duracaoMs,
+        );
+
         if ($resposta->dados === null) {
-            $motivo = $resposta->motivoParada === 'refusal'
+            $recusa = $resposta->motivoParada === 'refusal';
+            $motivo = $recusa
                 ? 'A IA recusou classificar esta publicação. Confira manualmente.'
                 : 'A IA respondeu fora do formato esperado. Confira manualmente.';
 
-            return ClassificacaoData::falha($motivo, $resposta->tokensEntrada, $resposta->tokensSaida);
+            return ClassificacaoData::falha($motivo)->comUso($uso->comResultado($recusa ? 'recusa' : 'invalido'));
         }
 
         try {
-            return self::paraClassificacao($resposta->dados, $resposta->tokensEntrada, $resposta->tokensSaida);
+            return self::paraClassificacao($resposta->dados)->comUso($uso);
         } catch (Throwable) {
-            return ClassificacaoData::falha('A IA respondeu com valores inválidos. Confira manualmente.', $resposta->tokensEntrada, $resposta->tokensSaida);
+            return ClassificacaoData::falha('A IA respondeu com valores inválidos. Confira manualmente.')
+                ->comUso($uso->comResultado('invalido'));
         }
     }
 
