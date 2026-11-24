@@ -42,7 +42,13 @@ export interface RelatorioRaioX {
     usuario?: { id: number; nome: string; email: string };
     pendentes?: number;
     erro?: string | null;
-    ia?: { modelo: string | null; tokensEntrada: number; tokensSaida: number };
+    ia?: {
+        modelo: string | null;
+        tokensEntrada: number;
+        tokensSaida: number;
+        custoUsd: number;
+        custoBrl: number;
+    };
 }
 
 /** App\Http\Resources\RaioX\ProcessoRaioXResource */

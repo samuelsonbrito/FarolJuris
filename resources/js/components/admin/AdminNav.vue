@@ -2,6 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import {
     Activity,
+    CircleDollarSign,
     LayoutDashboard,
     ScanSearch,
     Search,
@@ -43,6 +44,12 @@ const abas = [
         titulo: 'Raio-X',
         icone: ScanSearch,
         comPeriodo: false,
+    },
+    {
+        rota: 'admin.custos-ia',
+        titulo: 'Custos de IA',
+        icone: CircleDollarSign,
+        comPeriodo: true,
     },
 ];
 

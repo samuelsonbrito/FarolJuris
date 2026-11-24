@@ -2,8 +2,20 @@
 
 const inteiro = new Intl.NumberFormat('pt-BR');
 const decimal = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+const reais = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+});
+const dolares = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 4,
+});
 
-export type Formato = 'numero' | 'percentual' | 'ms';
+export type Formato = 'numero' | 'percentual' | 'ms' | 'brl' | 'usd';
 
 export function formatarValor(
     valor: number | null | undefined,
@@ -16,6 +28,10 @@ export function formatarValor(
     switch (formato) {
         case 'percentual':
             return `${decimal.format(valor)}%`;
+        case 'brl':
+            return reais.format(valor);
+        case 'usd':
+            return dolares.format(valor);
         case 'ms':
             return valor >= 1000
                 ? `${decimal.format(valor / 1000)} s`

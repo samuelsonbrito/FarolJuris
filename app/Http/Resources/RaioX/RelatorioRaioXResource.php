@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\RaioX;
 
+use App\Models\IA\ChamadaIA;
 use App\Models\RaioX\RelatorioRaioX;
 use App\Services\RaioX\ProgressoRaioX;
 use Illuminate\Http\Request;
@@ -45,7 +46,13 @@ class RelatorioRaioXResource extends JsonResource
             'usuario' => $this->when($admin, fn () => ['id' => $r->user->id, 'nome' => $r->user->name, 'email' => $r->user->email]),
             'pendentes' => $this->when($admin, fn () => $r->processos()->where('precisa_conferencia', true)->count()),
             'erro' => $this->when($admin, fn () => $r->erro),
-            'ia' => $this->when($admin, fn () => ['modelo' => $r->ia_modelo, 'tokensEntrada' => $r->ia_tokens_entrada, 'tokensSaida' => $r->ia_tokens_saida]),
+            'ia' => $this->when($admin, fn () => [
+                'modelo' => $r->ia_modelo,
+                'tokensEntrada' => $r->ia_tokens_entrada,
+                'tokensSaida' => $r->ia_tokens_saida,
+                'custoUsd' => round((float) ChamadaIA::query()->where('relatorio_id', $r->id)->sum('custo_usd'), 4),
+                'custoBrl' => round((float) ChamadaIA::query()->where('relatorio_id', $r->id)->sum('custo_brl'), 4),
+            ]),
         ];
     }
 }

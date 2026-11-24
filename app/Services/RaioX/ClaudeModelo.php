@@ -23,6 +23,7 @@ final class ClaudeModelo implements ModeloLinguagem
 
     public function gerarJson(string $sistema, string $usuario, array $esquema): RespostaModelo
     {
+        $inicio = hrtime(true);
         $mensagem = $this->cliente()->messages->create(
             model: $this->config['modelo'],
             maxTokens: $this->config['max_tokens'],
@@ -54,8 +55,11 @@ final class ClaudeModelo implements ModeloLinguagem
         return new RespostaModelo(
             $dados,
             $mensagem->stopReason,
-            $mensagem->usage->inputTokens + (int) $mensagem->usage->cacheReadInputTokens + (int) $mensagem->usage->cacheCreationInputTokens,
-            $mensagem->usage->outputTokens,
+            tokensEntrada: $mensagem->usage->inputTokens,
+            tokensSaida: $mensagem->usage->outputTokens,
+            tokensCacheLeitura: (int) $mensagem->usage->cacheReadInputTokens,
+            tokensCacheEscrita: (int) $mensagem->usage->cacheCreationInputTokens,
+            duracaoMs: (int) round((hrtime(true) - $inicio) / 1_000_000),
         );
     }
 

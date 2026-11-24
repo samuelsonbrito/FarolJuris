@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatarData, normalizarOab } from '@/lib/cnj';
+import { formatarValor } from '@/lib/formatar';
 import { duracao } from '@/lib/raiox';
 import type { RelatorioRaioX, TemposRaioX } from '@/types/raiox';
 
@@ -307,7 +308,15 @@ const selectClass =
                                         maximumFractionDigits: 0,
                                     })
                                 }}
-                                mil tokens
+                                mil tokens<br />
+                                <span
+                                    class="font-semibold text-foreground"
+                                    data-testid="custo-raiox"
+                                    >{{
+                                        formatarValor(r.ia.custoBrl, 'brl')
+                                    }}</span
+                                >
+                                ({{ formatarValor(r.ia.custoUsd, 'usd') }})
                             </template>
                             <template v-else>—</template>
                         </td>

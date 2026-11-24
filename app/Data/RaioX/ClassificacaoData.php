@@ -31,7 +31,20 @@ final readonly class ClassificacaoData
         public int $tokensSaida = 0,
         /** Falha técnica (IA recusou, resposta inválida, erro de rede): vai para conferência. */
         public bool $falhou = false,
+        /** Consumo da chamada à IA (nulo quando não houve chamada, como no driver de regras). */
+        public ?UsoIA $uso = null,
     ) {}
+
+    public function comUso(?UsoIA $uso): self
+    {
+        return new self(
+            $this->resultado, $this->extincaoSemMerito, $this->instancia, $this->orgaoJulgador, $this->varaOrigem,
+            $this->grupoOrigem, $this->tema, $this->parteContraria, $this->poloCliente, $this->dataDecisao,
+            $this->confianca, $this->justificativa, $this->hashDecisao,
+            $uso ? $uso->totalEntrada() : $this->tokensEntrada, $uso ? $uso->saida : $this->tokensSaida,
+            $this->falhou, $uso,
+        );
+    }
 
     /** Casos ambíguos vão para conferência humana antes de entrar nos números. */
     public function precisaConferencia(): bool

@@ -41,6 +41,19 @@ return [
         'max_caracteres_publicacao' => (int) env('RAIOX_IA_MAX_CARACTERES', 6000),
     ],
 
+    // Custo da IA (painel Administração → Custos de IA). Preços em dólar por milhão de tokens,
+    // da tabela da Anthropic (confira em https://www.anthropic.com/pricing ao trocar de modelo).
+    // Escrita em cache = 1,25 × entrada (cache de 5 minutos).
+    'custos' => [
+        // Cotação usada para converter em reais (gravada em cada chamada). Atualize no .env.
+        'cotacao_usd_brl' => (float) env('RAIOX_COTACAO_USD_BRL', 5.50),
+        'precos' => [
+            'claude-opus-5-5' => ['entrada' => 4.00, 'saida' => 20.00, 'cache_leitura' => 0.20, 'cache_escrita' => 5.00],
+            'claude-sonnet-5-5' => ['entrada' => 2.00, 'saida' => 10.00, 'cache_leitura' => 0.10, 'cache_escrita' => 2.50],
+            'claude-haiku-5-5' => ['entrada' => 0.10, 'saida' => 0.50, 'cache_leitura' => 0.01, 'cache_escrita' => 0.125],
+        ],
+    ],
+
     // Abaixo deste número de decididos, um grupo não entra em "onde vai melhor/pior".
     'minimo_para_destaque' => (int) env('RAIOX_MINIMO_DESTAQUE', 5),
 

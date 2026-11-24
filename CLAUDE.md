@@ -200,6 +200,8 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
   Testes usam o driver `fake` (phpunit.xml) e um `ModeloLinguagem` falso; nunca chamam a API.
 - Progresso: tempos/contadores por etapa em `raiox_relatorios` (`iniciado_em`, `coleta_concluida_em`, páginas, classificados);
   `ProgressoRaioX` estima % e tempo restante pelo ritmo dos últimos Raio-X (barra `raiox/BarraProgresso`, polling de 4 s).
+- Custos de IA: `ia_chamadas` (`ChamadaIA`, tokens por tipo, `custo_usd`, cotação, `custo_brl`) gravada a cada chamada por
+  `App\Services\IA\CustoIA` (preços em `raiox.custos.precos`, cotação `RAIOX_COTACAO_USD_BRL`); painel `admin.custos-ia`.
 - `MetricasRaioX`: taxa = (êxito + parcial) ÷ decididos (sem conferência); custo por êxito. Planilha `PlanilhaRaioX`,
   PDF `exports/raiox.blade.php`. Detalhes: `docs/15-raio-x.md`.
 
