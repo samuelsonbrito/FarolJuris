@@ -21,6 +21,12 @@ final class TipoEvento
 
     public const CONTA_EXCLUIDA = 'conta.excluida';
 
+    public const RAIOX_SOLICITADO = 'raiox.solicitado';
+
+    public const RAIOX_GERADO = 'raiox.gerado';
+
+    public const RAIOX_LIBERADO = 'raiox.liberado';
+
     public const ALVO_CRIADO = 'alvo.criado';
 
     public const ALVO_PAUSADO = 'alvo.pausado';
@@ -89,6 +95,9 @@ final class TipoEvento
         self::EXPORTACAO_FALHOU => 'Exportação falhou',
         self::EXPORTACAO_BAIXADA => 'Exportação baixada',
         self::EXPORTACAO_EXCLUIDA => 'Exportação excluída',
+        self::RAIOX_SOLICITADO => 'Raio-X solicitado',
+        self::RAIOX_GERADO => 'Raio-X gerado',
+        self::RAIOX_LIBERADO => 'Raio-X liberado',
         self::ADMIN_PROMOVIDO => 'Acesso de administrador concedido',
         self::ADMIN_REMOVIDO => 'Acesso de administrador removido',
     ];

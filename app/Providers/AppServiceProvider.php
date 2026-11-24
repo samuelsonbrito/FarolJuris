@@ -2,14 +2,21 @@
 
 namespace App\Providers;
 
+use App\Models\RaioX\RelatorioRaioX;
 use App\Models\User;
 use App\Notifications\WhatsApp\LogWhatsAppDriver;
 use App\Notifications\WhatsApp\WhatsAppDriver;
+use App\Policies\RelatorioRaioXPolicy;
 use App\Services\Datajud\DatajudClient;
 use App\Services\Djen\Contracts\ComunicacaoGateway;
 use App\Services\Djen\DjenClient;
 use App\Services\Djen\Gateways\DjenApiGateway;
 use App\Services\Djen\Gateways\FakeComunicacaoGateway;
+use App\Services\RaioX\ClassificadorIA;
+use App\Services\RaioX\ClassificadorRegras;
+use App\Services\RaioX\ClaudeModelo;
+use App\Services\RaioX\Contracts\ClassificadorDecisoes;
+use App\Services\RaioX\Contracts\ModeloLinguagem;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -43,6 +50,13 @@ class AppServiceProvider extends ServiceProvider
             $app['config']->get('datajud'),
         ));
 
+        // Raio-X: classificação das decisões (Claude pela API da Anthropic, ou regras fixas sem custo).
+        $this->app->bind(ModeloLinguagem::class, fn ($app): ModeloLinguagem => new ClaudeModelo((array) $app['config']->get('raiox.ia')));
+        $this->app->bind(ClassificadorDecisoes::class, fn ($app): ClassificadorDecisoes => match ($app['config']->get('raiox.ia.driver')) {
+            'fake' => new ClassificadorRegras,
+            default => new ClassificadorIA($app->make(ModeloLinguagem::class)),
+        });
+
         $this->app->singleton(ComunicacaoGateway::class, fn ($app): ComunicacaoGateway => match ($app['config']->get('djen.gateway')) {
             'fake' => new FakeComunicacaoGateway,
             default => $app->make(DjenApiGateway::class),
@@ -73,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Área administrativa (/admin): só quem tem users.is_admin.
         Gate::define('admin', fn (User $user): bool => (bool) $user->is_admin);
+        Gate::policy(RelatorioRaioX::class, RelatorioRaioXPolicy::class);
     }
 
     /**

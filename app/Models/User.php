@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\RaioX\RelatorioRaioX;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -66,6 +67,12 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     public function exportacoes(): HasMany
     {
         return $this->hasMany(Exportacao::class);
+    }
+
+    /** @return HasMany<RelatorioRaioX, $this> */
+    public function relatoriosRaioX(): HasMany
+    {
+        return $this->hasMany(RelatorioRaioX::class);
     }
 
     /** Destino do canal App\Notifications\Channels\WhatsAppChannel. */

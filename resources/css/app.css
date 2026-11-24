@@ -110,6 +110,11 @@
     --viz-alerta: #fab219;
     --viz-critico: #d03b3b;
     --viz-neutro: #a3a29c;
+    /* Raio-X: resultado das decisões (sempre com legenda e número escrito). */
+    --raiox-exito: #1f3f66;
+    --raiox-parcial: #8aa6c4;
+    --raiox-acordo: #c4c3bd;
+    --raiox-insucesso: #c9b27f;
 
     --background: #ffffff;
     --foreground: #0f1b2a;
@@ -152,6 +157,10 @@
     --marca-juris: #9db8d6;
     --viz-serie: #3987e5;
     --viz-neutro: #6b6a65;
+    --raiox-exito: #8fb4e3;
+    --raiox-parcial: #4f6f93;
+    --raiox-acordo: #5d5c57;
+    --raiox-insucesso: #b39a60;
 
     --background: #0b1726;
     --foreground: #eef3f8;

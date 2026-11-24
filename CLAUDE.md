@@ -186,6 +186,20 @@ Ao final de cada fase: Pest, Vitest, Pint, `vp check`, `vue-tsc`, `npm run build
 - Front: `AndamentosProcesso` no `PainelComunicacao`, sob demanda (botão), tipos em `types/datajud.ts`.
   Fixtures reais em `tests/Fixtures/datajud/`. Detalhes: `docs/14-andamentos-datajud.md`.
 
+## Raio-X de desempenho
+
+- Menu `/raio-x` (`raiox.*`, auth): o usuário pede pela OAB; o admin (`/admin/raio-x`, `admin.raiox.*`) gera,
+  confere os ambíguos e libera (e-mails `RaioXSolicitado`/`RaioXLiberado`). Status em `StatusRaioX`.
+- Tabelas `raiox_relatorios`, `raiox_publicacoes`, `raiox_processos` (cascata com a conta). `GeradorRaioX`:
+  `ColetarRaioXJob` (15 páginas por tarefa, reencadeia; abaixo do retry_after de 90 s) → `montar` →
+  `Bus::batch` de `ClassificarProcessoRaioXJob` → `concluir`. Só processos com decisão (`DetectorDecisao`) vão para a IA.
+- IA: `Contracts\ClassificadorDecisoes` (`RAIOX_IA_DRIVER=claude|fake`). `ClassificadorIA` usa
+  `Contracts\ModeloLinguagem` → `ClaudeModelo` (SDK `anthropic-ai/sdk`, `claude-opus-5-5`, esforço baixo, saída
+  estruturada, prompt de sistema com cache). Recusa/erro/JSON inválido/confiança baixa → conferência humana.
+  Testes usam o driver `fake` (phpunit.xml) e um `ModeloLinguagem` falso; nunca chamam a API.
+- `MetricasRaioX`: taxa = (êxito + parcial) ÷ decididos (sem conferência); custo por êxito. Planilha `PlanilhaRaioX`,
+  PDF `exports/raiox.blade.php`. Detalhes: `docs/15-raio-x.md`.
+
 ## Aba Monitoramento
 
 - Rotas `auth`+`verified` em `/monitoramento` (`monitoramento.*`); `dashboard` e o
