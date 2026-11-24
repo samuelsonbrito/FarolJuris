@@ -63,6 +63,18 @@ liberar (com aviso de prévia). Gerar de novo apaga a coleta e a classificação
   (`components/raiox/BarraProgresso.vue`) e se atualizam a cada 4 s. O admin vê o tempo médio dos Raio-X gerados e,
   em cada relatório concluído, quanto ele levou (`duracaoSegundos`).
 
+## Custos de IA (Administração → Custos de IA)
+
+- Cada chamada à IA grava uma linha em `ia_chamadas` (`ChamadaIA`): modelo, tokens de entrada, de leitura e de escrita
+  em cache e de saída, `custo_usd`, a cotação usada (`cotacao_usd_brl`), `custo_brl`, resultado (`ok`, `recusa`,
+  `invalido`, `erro`) e duração. Sem texto nem dado pessoal. Fica mesmo se o Raio-X for excluído (`relatorio_id` nulo).
+- `App\Services\IA\CustoIA` calcula o valor pela tabela `raiox.custos.precos` (US$ por milhão de tokens; escrita em
+  cache = 1,25 × entrada) e converte pela cotação `RAIOX_COTACAO_USD_BRL` (5,50 por padrão; atualize no `.env`). Modelo
+  sem preço configurado: tokens gravados, valor em branco (o painel avisa).
+- O painel (`admin.custos-ia`, `Admin/CustosIA.vue`) filtra por período e mostra: gasto em reais e em dólares, média por
+  Raio-X e por chamada, tokens, falhas, gasto por dia, por Raio-X e a lista de chamadas. A lista de pedidos do Raio-X
+  também mostra quanto cada um custou.
+
 ## Métricas (`MetricasRaioX`)
 
 - Cada processo conta uma vez, pela decisão mais recente do período, lida do lado do cliente.
