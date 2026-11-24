@@ -1,5 +1,6 @@
 <?php
 
+use App\Data\RaioX\ContextoProcesso;
 use App\Data\RaioX\RespostaModelo;
 use App\Data\RaioX\UsoIA;
 use App\Models\IA\ChamadaIA;
@@ -88,7 +89,7 @@ it('registra a chamada que falhou, sem tokens', function () {
         }
     };
 
-    $c = (new ClassificadorIA($modelo))->classificar(new App\Data\RaioX\ContextoProcesso('1', null, '1', 'AM', null, null, []));
+    $c = (new ClassificadorIA($modelo))->classificar(new ContextoProcesso('1', null, '1', 'AM', null, null, []));
 
     expect($c->uso?->resultado)->toBe('recusa')
         ->and($c->uso?->entrada)->toBe(800)
