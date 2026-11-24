@@ -58,8 +58,11 @@ class RaioXController extends Controller
         $relatorio = self::criar($user, $dados['oab'], $dados['uf']);
         $rastreador->evento(TipoEvento::RAIOX_SOLICITADO, ['relatorio_id' => $relatorio->id], $user, $request);
 
-        Notification::send(User::query()->where('is_admin', true)->get(), new RaioXSolicitado($relatorio));
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Pedido enviado. Avisaremos por e-mail quando o Raio-X estiver pronto.']);
+        if (config('raiox.avisos_email')) {
+            Notification::send(User::query()->where('is_admin', true)->get(), new RaioXSolicitado($relatorio));
+        }
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Pedido enviado. O Raio-X aparece aqui quando estiver pronto.']);
 
         return back();
     }

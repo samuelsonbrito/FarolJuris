@@ -4,12 +4,19 @@ namespace App\Notifications\RaioX;
 
 use App\Models\RaioX\RelatorioRaioX;
 use App\Models\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /** Para o dono: o Raio-X foi conferido e está disponível. */
-class RaioXLiberado extends Notification
+class RaioXLiberado extends Notification implements ShouldQueue
 {
+    use Queueable;
+
+    /** Pela fila: uma falha de e-mail (SMTP) não pode derrubar o pedido nem a liberação. */
+    public int $tries = 3;
+
     public function __construct(public readonly RelatorioRaioX $relatorio) {}
 
     /** @return list<string> */

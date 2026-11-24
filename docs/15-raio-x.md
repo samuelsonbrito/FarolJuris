@@ -20,14 +20,14 @@ flowchart LR
     PR -->|admin: Liberar + e-mail| L[liberado: o dono vê]
 ```
 
-| Status        | Significado                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------- |
-| `solicitado`  | Pedido feito; os admins recebem e-mail (`RaioXSolicitado`). Confira se a OAB é de quem pediu. |
-| `processando` | Coleta e classificação na fila (a tela do admin atualiza sozinha).                            |
-| `conferencia` | Há casos ambíguos (confiança baixa, lado do cliente indefinido ou falha da IA).               |
-| `pronto`      | Tudo classificado; falta liberar.                                                             |
-| `liberado`    | O dono vê o relatório e recebe e-mail (`RaioXLiberado`).                                      |
-| `falhou`      | O DJEN não respondeu na coleta (mensagem em `erro`).                                          |
+| Status        | Significado                                                                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `solicitado`  | Pedido feito (com `RAIOX_AVISOS_EMAIL=true`, os admins recebem o e-mail `RaioXSolicitado`). Confira se a OAB é de quem pediu. |
+| `processando` | Coleta e classificação na fila (a tela do admin atualiza sozinha).                                                            |
+| `conferencia` | Há casos ambíguos (confiança baixa, lado do cliente indefinido ou falha da IA).                                               |
+| `pronto`      | Tudo classificado; falta liberar.                                                                                             |
+| `liberado`    | O dono vê o relatório (e recebe o e-mail `RaioXLiberado`, se os avisos estiverem ligados).                                    |
+| `falhou`      | O DJEN não respondeu na coleta (mensagem em `erro`).                                                                          |
 
 O admin também pode criar um Raio-X para qualquer conta (pelo e-mail) e vê o relatório antes de
 liberar (com aviso de prévia). Gerar de novo apaga a coleta e a classificação anteriores.
@@ -75,15 +75,16 @@ liberar (com aviso de prévia). Gerar de novo apaga a coleta e a classificação
 
 ## Configuração (`config/raiox.php`)
 
-| Variável            | Padrão            |                                                                         |
-| ------------------- | ----------------- | ----------------------------------------------------------------------- |
-| `ANTHROPIC_API_KEY` | —                 | **obrigatória em produção** (chave da API da Anthropic)                 |
-| `RAIOX_IA_DRIVER`   | `claude`          | `fake` usa regras e dados de exemplo, sem IA (desenvolvimento e testes) |
-| `RAIOX_IA_MODELO`   | `claude-opus-5-5` | modelo da classificação                                                 |
-| `RAIOX_IA_ESFORCO`  | `low`             | esforço (`output_config.effort`)                                        |
-| `RAIOX_MESES`       | `12`              | período analisado                                                       |
-| `RAIOX_MAX_PAGINAS` | `60`              | teto de páginas de 100 publicações                                      |
-| `RAIOX_PAUSA_MS`    | `3100`            | pausa entre páginas do DJEN                                             |
+| Variável             | Padrão            |                                                                                                      |
+| -------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`  | —                 | **obrigatória em produção** (chave da API da Anthropic)                                              |
+| `RAIOX_IA_DRIVER`    | `claude`          | `fake` usa regras e dados de exemplo, sem IA (desenvolvimento e testes)                              |
+| `RAIOX_IA_MODELO`    | `claude-opus-5-5` | modelo da classificação                                                                              |
+| `RAIOX_IA_ESFORCO`   | `low`             | esforço (`output_config.effort`)                                                                     |
+| `RAIOX_AVISOS_EMAIL` | `false`           | e-mails de pedido (admins) e de liberação (dono), pela fila; ligue quando o SMTP estiver configurado |
+| `RAIOX_MESES`        | `12`              | período analisado                                                                                    |
+| `RAIOX_MAX_PAGINAS`  | `60`              | teto de páginas de 100 publicações                                                                   |
+| `RAIOX_PAUSA_MS`     | `3100`            | pausa entre páginas do DJEN                                                                          |
 
 O admin vê o modelo e os tokens gastos em cada Raio-X. A ordem de grandeza: algumas dezenas a poucas
 centenas de chamadas por OAB (só processos com decisão), cada uma com poucos milhares de tokens.

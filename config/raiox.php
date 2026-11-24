@@ -13,6 +13,10 @@ return [
     |
     */
 
+    // Avisos por e-mail (pedido para os admins, liberação para o dono). Desligados até o envio de
+    // e-mails do servidor estar configurado; quando ligados, saem pela fila.
+    'avisos_email' => (bool) env('RAIOX_AVISOS_EMAIL', false),
+
     // Período analisado (meses para trás, a partir de hoje).
     'meses' => (int) env('RAIOX_MESES', 12),
 

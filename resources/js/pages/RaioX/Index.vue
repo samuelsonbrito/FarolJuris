@@ -103,7 +103,9 @@ const selectClass =
                     2. Coletamos as publicações e classificamos cada decisão;
                     casos ambíguos são conferidos pela nossa equipe.
                 </li>
-                <li>3. Avisamos por e-mail quando o Raio-X estiver pronto.</li>
+                <li>
+                    3. Quando estiver pronto, o Raio-X aparece nesta página.
+                </li>
             </ol>
         </form>
 
@@ -157,7 +159,7 @@ const selectClass =
                         </Link>
                     </Button>
                     <p v-else class="ml-auto text-xs text-muted-foreground">
-                        Avisaremos por e-mail quando estiver pronto.
+                        Aparece aqui quando estiver pronto.
                     </p>
                 </li>
             </ul>
